@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { AlertMessage } from "@/components/alert-message"
 import { chatsApi, analyzeApi, type Chat, type AnalyzeResponse } from "@/lib/api"
 import { cn } from "@/lib/utils"
+import { useApiError } from "@/lib/hooks/useApiError"
 
 interface ChatsContentProps {
   initialChats: Chat[]
@@ -17,6 +18,7 @@ interface ChatsContentProps {
 
 export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) {
   const router = useRouter()
+  const { handleError } = useApiError()
   const [chats, setChats] = useState<Chat[]>(initialChats)
   const [loading, setLoading] = useState(false) // Initial data loaded server-side
   const [analyzing, setAnalyzing] = useState<number | null>(null)
@@ -25,27 +27,57 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
   const [analysisResult, setAnalysisResult] = useState<AnalyzeResponse | null>(null)
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
   const [phone] = useState<string>(initialPhone) // Phone is fixed from server
+  const [abortController, setAbortController] = useState<AbortController | null>(null)
+
+  // Cleanup on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (abortController) {
+        abortController.abort()
+      }
+    }
+  }, [abortController])
 
   // Remove server-side fetching useEffect, data comes from props
 
   const handleAnalyze = async (chat: Chat) => {
     if (!phone) return
 
+    // Cancel previous request if exists
+    if (abortController) {
+      abortController.abort()
+    }
+
+    const controller = new AbortController()
+    setAbortController(controller)
     setAnalyzing(chat.id)
     setSelectedChat(chat)
     setError(null)
 
     try {
-      const result = await analyzeApi.analyze({
-        phone,
-        chat_id: chat.id,
-        limit: 50,
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, chat_id: chat.id, limit: 50 }),
+        signal: controller.signal, // ✅ Cancellation token
       })
+
+      if (!response.ok) {
+        const errorMsg = await handleError({ status: response.status, message: response.statusText })
+        setError(errorMsg)
+        return
+      }
+
+      const result = await response.json()
       setAnalysisResult(result)
     } catch (err: any) {
-      setError(err.message || "Tahlil qilishda xatolik")
+      if (err.name !== 'AbortError') {
+        const errorMsg = await handleError(err)
+        setError(errorMsg)
+      }
     } finally {
       setAnalyzing(null)
+      setAbortController(null)
     }
   }
 
@@ -56,7 +88,8 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
       const response = await chatsApi.getChats(phone)
       setChats(response.chats)
     } catch (err: any) {
-      setError(err.message || "Chatlarni yangilashda xatolik")
+      const errorMsg = await handleError(err)
+      setError(errorMsg)
     } finally {
       setLoading(false)
     }
