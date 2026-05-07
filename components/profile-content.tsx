@@ -4,10 +4,11 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { User, Phone, Key, Hash, LogOut, Shield, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { tokenUtils } from "@/lib/api"
+import { useAuth } from "@/hooks/use-auth"
 
 export function ProfileContent() {
   const router = useRouter()
+  const { getPhone, logout } = useAuth()
   const [userData, setUserData] = useState<{
     phone: string | null
     apiId: string | null
@@ -19,25 +20,24 @@ export function ProfileContent() {
   })
 
   useEffect(() => {
-    const phone = tokenUtils.getPhone()
-    if (!phone) {
-      router.push("/login")
-      return
+    const initializeProfile = async () => {
+      const phone = await getPhone()
+      if (!phone) {
+        router.push("/login")
+        return
+      }
+
+      setUserData({
+        phone,
+        apiId: null,
+        apiHash: null,
+      })
     }
+    initializeProfile()
+  }, [router, getPhone])
 
-    setUserData({
-      phone,
-      apiId: localStorage.getItem("telegram_api_id"),
-      apiHash: localStorage.getItem("telegram_api_hash"),
-    })
-  }, [router])
-
-  const handleLogout = () => {
-    tokenUtils.removeToken()
-    tokenUtils.removePhone()
-    localStorage.removeItem("telegram_api_id")
-    localStorage.removeItem("telegram_api_hash")
-    router.push("/login")
+  const handleLogout = async () => {
+    await logout()
   }
 
   const maskString = (str: string | null, showFirst = 4) => {

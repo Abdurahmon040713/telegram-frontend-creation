@@ -2,6 +2,10 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { ThemeProvider } from "@/components/theme-provider"
+import { ChatProvider } from "@/lib/chat-context"
+import { ChatToaster } from "@/components/chat-toaster"
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -27,9 +31,20 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="uz">
-      <body className={`font-sans antialiased`}>
-        {children}
+    <html lang="uz" suppressHydrationWarning>
+      <body className={`font-sans antialiased`} suppressHydrationWarning>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ChatProvider>
+            {children}
+            <ChatToaster />
+            <Toaster />
+          </ChatProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

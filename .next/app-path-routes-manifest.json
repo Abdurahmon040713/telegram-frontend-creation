@@ -1,0 +1,15 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/analyze/route": "/api/analyze",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/auth/logout/route": "/api/auth/logout",
+  "/api/auth/phone/route": "/api/auth/phone",
+  "/api/auth/verify/route": "/api/auth/verify",
+  "/api/chats/route": "/api/chats",
+  "/chats/page": "/chats",
+  "/dashboard/page": "/dashboard",
+  "/login/page": "/login",
+  "/page": "/",
+  "/profile/page": "/profile"
+}

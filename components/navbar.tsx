@@ -1,23 +1,19 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { MessageSquare, User, Home, LogOut, Menu, X } from "lucide-react"
-import { tokenUtils } from "@/lib/api"
+import { useAuth } from "@/hooks/use-auth"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 
 export function Navbar() {
   const pathname = usePathname()
-  const router = useRouter()
+  const { logout } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleLogout = () => {
-    tokenUtils.removeToken()
-    tokenUtils.removePhone()
-    localStorage.removeItem("telegram_api_id")
-    localStorage.removeItem("telegram_api_hash")
-    router.push("/login")
+  const handleLogout = async () => {
+    await logout()
   }
 
   const navItems = [

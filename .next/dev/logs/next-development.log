@@ -1,0 +1,17 @@
+[00:00:04.618] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:05.356] Server  LOG      ✓ Ready in 4s
+[00:00:11.868] Server  LOG      ○ Compiling / ...
+[00:00:20.232] Server  WARN     ⚠ Cross origin request detected from 10.44.176.33 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:00:20.333] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:20.664] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:00:20.664] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/login","route":"/login"}
+[00:00:20.665] Browser LOG     %c[Vercel Web Analytics]%c [view] http://10.44.176.33:3000/login color: rgb(120, 120, 120) color: inherit {"dp":"/login","o":"http://10.44.176.33:3000/login","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1778138625796} /_vercel/insights/view
+[00:00:25.803] Browser LOG     Login boshlanmoqda... {"api_id":"20332243","phone":"+998 91 283 26 82"}
+[00:00:31.369] Browser LOG     Login javob: {"phone_code_hash":"5bd7c077487eaff468","status":"waiting_for_code"}
+[00:00:45.786] Browser LOG     Verification boshlanmoqda... {"code":"5 raqam","phone":"+998 91 283 26 82"}
+[00:00:47.850] Browser LOG     Verification javob: {"expires_in":86400,"status":"success","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6Iis5OTggOTEgMjgzIDI2IDgyIiwiZXhwIjoxNzc4MjI1MDUyLCJpYXQiOjE3NzgxMzg2NTIsImp0aSI6ImNmNzQ1Yzk5LWU2MjUtNGU5Zi1iYmIwLTJhNmNmMjRlNTMyYyJ9.kQXDCL4I-HJyh5kQG-xjqRDjMRSTugnZOIGDPQ2VBmI","token_type":"bearer"}
+[00:00:47.850] Browser LOG     Token js-cookie orqali saqlanimoqda...
+[00:00:47.850] Browser LOG     Token va phone raqam js-cookie ga saqlandi
+[00:00:50.607] Browser LOG     %c[Vercel Web Analytics]%c [view] http://10.44.176.33:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://10.44.176.33:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1778138655731} /_vercel/insights/view
+[00:00:50.827] Browser LOG     %c[Vercel Web Analytics]%c [view] http://10.44.176.33:3000/login color: rgb(120, 120, 120) color: inherit {"dp":"/login","o":"http://10.44.176.33:3000/login","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1778138655968} /_vercel/insights/view
