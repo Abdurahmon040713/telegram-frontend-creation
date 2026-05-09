@@ -2,6 +2,13 @@ import { z } from 'zod'
 
 // Login validation schema
 export const loginSchema = z.object({
+  api_id: z
+    .number({ invalid_type_error: 'API ID son bo\'lishi kerak' })
+    .int('API ID butun son bo\'lishi kerak')
+    .positive('API ID musbat son bo\'lishi kerak'),
+  api_hash: z
+    .string()
+    .min(10, 'API Hash juda qisqa (kamida 10 belgi)'),
   phone: z
     .string()
     .min(1, 'Telefon raqam talab qilinadi')

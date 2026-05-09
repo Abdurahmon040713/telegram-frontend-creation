@@ -1,3 +1,11 @@
+// HTTP status kodi bilan xato — useApiError.ts da to'g'ri aniqlanishi uchun
+export class ApiError extends Error {
+  constructor(public status: number, message: string) {
+    super(message)
+    this.name = 'ApiError'
+  }
+}
+
 // API Configuration
 // Eslatma: Vercel/Render ga yuklaganda NEXT_PUBLIC_API_URL ni server URL manziliga o'zgartirasiz.
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
@@ -43,7 +51,7 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
       }
       
       console.error(`API Error [${response.status}]:`, error)
-      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+      throw new ApiError(response.status, error.detail || `HTTP error! status: ${response.status}`)
     }
 
     const contentType = response.headers.get('content-type')

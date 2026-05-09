@@ -10,8 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AlertMessage } from "@/components/alert-message"
 import { authApi } from "@/lib/api"
-import Cookies from "js-cookie"
-
 export function LoginForm() {
   const router = useRouter()
   const [step, setStep] = useState<"credentials" | "verification">("credentials")
@@ -72,30 +70,6 @@ export function LoginForm() {
         setStep("verification")
         setSuccess("Tasdiqlash kodi yuborildi!")
       } else if (response?.status === "authorized") {
-        // Agar login muvaffaqiyatli bo'lsa va token bo'lsa, saqlash
-        try {
-          if (response?.token || response?.access_token) {
-            const token = response.token || response.access_token
-            console.log('Login token saqlanimoqda...')
-            
-            Cookies.set('telegram_token', token, { 
-              expires: 7,
-              secure: true,
-              sameSite: 'lax',
-              path: '/'
-            })
-            
-            Cookies.set('telegram_phone', phone, { 
-              expires: 7,
-              secure: true,
-              sameSite: 'lax',
-              path: '/'
-            })
-          }
-        } catch (storageError) {
-          console.error('Login token saqlash xatoligi:', storageError)
-        }
-
         setSuccess("Muvaffaqiyatli kirildi!")
         router.refresh()
         setTimeout(() => router.push("/dashboard"), 500)
@@ -136,36 +110,8 @@ export function LoginForm() {
       console.log('Verification javob:', response)
 
       if (response?.status === "success") {
-        // Token va phone raqamini js-cookie orqali saqlash
-        try {
-          // Agar response'da token bo'lsa
-          if (response?.token || response?.access_token) {
-            const token = response.token || response.access_token
-            console.log('Token js-cookie orqali saqlanimoqda...')
-            
-            // Tokenni 7 kunga telegram_token nomi bilan saqlash
-            Cookies.set('telegram_token', token, { 
-              expires: 7, // 7 kun
-              secure: true, // HTTPS orqali faqat
-              sameSite: 'lax', // CSRF himoya
-              path: '/' // Barcha routes'da mavjud bo'lishi uchun
-            })
-            
-            // Phone raqamini ham saqlash
-            Cookies.set('telegram_phone', phone, { 
-              expires: 7,
-              secure: true,
-              sameSite: 'lax',
-              path: '/'
-            })
-            
-            console.log('Token va phone raqam js-cookie ga saqlandi')
-          }
-        } catch (storageError) {
-          console.error('Token/Phone saqlash xatoligi:', storageError)
-          // Xatolik bo'lsa ham, dashboard'ga o'tish uchun davom etamiz
-        }
-
+        // Token server-side action (verify/route.ts → setAuthToken) orqali
+        // httpOnly cookie'ga allaqachon saqlangan — bu yerda qayta saqlash shart emas.
         setSuccess("Muvaffaqiyatli kirildi!")
         
         // Cookielar yangilanganiga ishonch hosil qilish uchun router.refresh() ishlatamiz
