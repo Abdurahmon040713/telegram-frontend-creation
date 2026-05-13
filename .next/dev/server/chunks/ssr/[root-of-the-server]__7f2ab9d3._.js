@@ -99,47 +99,50 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
+const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:8001") || 'http://localhost:8000';
 async function ChatsPage() {
-    const cookieStore = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cookies"])();
+    const cookieStore = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cookies"])();
     const token = cookieStore.get('telegram_token')?.value;
-    if (!token) {
+    const phone = cookieStore.get('telegram_phone')?.value;
+    if (!token || !phone) {
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$components$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["redirect"])('/login');
     }
-    // Server-side data fetching
-    const [chatsResponse, phoneResponse] = await Promise.all([
-        fetch(`${("TURBOPACK compile-time value", "http://localhost:8001") || 'http://localhost:8000'}/chats`, {
+    // Server-side pre-fetch: backend POST /chats endpointi token va phone talab qiladi
+    let initialChats = [];
+    try {
+        const chatsResponse = await fetch(`${BACKEND_URL}/chats`, {
+            method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
+            body: JSON.stringify({
+                phone
+            }),
             cache: 'no-store'
-        }),
-        fetch('/api/auth/phone', {
-            headers: {
-                'Cookie': cookieStore.toString()
-            }
-        })
-    ]);
-    if (!chatsResponse.ok || !phoneResponse.ok) {
-        // Handle error, perhaps redirect or show error
-        (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$components$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["redirect"])('/login');
+        });
+        if (chatsResponse.ok) {
+            const data = await chatsResponse.json();
+            initialChats = data.chats || [];
+        }
+    // Server-side xatolik bo'lsa: bo'sh ro'yxat bilan davom eting,
+    // foydalanuvchi "Yangilash" tugmasi orqali qayta yuklashi mumkin.
+    } catch  {
+    // Network xatolik — client-side refresh bilan hal qilinadi
     }
-    const chats = await chatsResponse.json();
-    const phoneData = await phoneResponse.json();
-    const phone = phoneData.phone;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Fragment"], {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$navbar$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Navbar"], {}, void 0, false, {
                 fileName: "[project]/app/chats/page.tsx",
-                lineNumber: 41,
+                lineNumber: 43,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$features$2f$chats$2f$chats$2d$content$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ChatsContent"], {
-                initialChats: chats,
+                initialChats: initialChats,
                 initialPhone: phone
             }, void 0, false, {
                 fileName: "[project]/app/chats/page.tsx",
-                lineNumber: 42,
+                lineNumber: 44,
                 columnNumber: 7
             }, this)
         ]

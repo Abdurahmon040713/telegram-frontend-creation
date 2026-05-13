@@ -2,8 +2,8 @@
   "node": {
     "40d2f971621d8ed26f78e514b1a0befc1936e7a796": {
       "workers": {
-        "app/dashboard/page": {
-          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+        "app/chats/page": {
+          "moduleId": "[project]/.next-internal/server/app/chats/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "setAuthToken",
           "filename": "app/actions/auth-action.ts"
@@ -16,7 +16,7 @@
         }
       },
       "layer": {
-        "app/dashboard/page": "rsc",
+        "app/chats/page": "action-browser",
         "app/login/page": "action-browser"
       },
       "filename": "app/actions/auth-action.ts",
@@ -24,8 +24,8 @@
     },
     "00cac13111a1a7857ec6f1c432c255ad2a8a888e69": {
       "workers": {
-        "app/dashboard/page": {
-          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+        "app/chats/page": {
+          "moduleId": "[project]/.next-internal/server/app/chats/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "getAuthToken",
           "filename": "app/actions/auth-action.ts"
@@ -38,7 +38,7 @@
         }
       },
       "layer": {
-        "app/dashboard/page": "rsc",
+        "app/chats/page": "action-browser",
         "app/login/page": "action-browser"
       },
       "filename": "app/actions/auth-action.ts",
@@ -46,8 +46,8 @@
     },
     "40ab78069dfb465f3fc0c6e4fb4262e5e81a873946": {
       "workers": {
-        "app/dashboard/page": {
-          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+        "app/chats/page": {
+          "moduleId": "[project]/.next-internal/server/app/chats/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "setPhoneNumber",
           "filename": "app/actions/auth-action.ts"
@@ -60,7 +60,7 @@
         }
       },
       "layer": {
-        "app/dashboard/page": "rsc",
+        "app/chats/page": "action-browser",
         "app/login/page": "action-browser"
       },
       "filename": "app/actions/auth-action.ts",
@@ -68,8 +68,8 @@
     },
     "006bd569f72bfb24cd3556090cce045e8093c903f3": {
       "workers": {
-        "app/dashboard/page": {
-          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+        "app/chats/page": {
+          "moduleId": "[project]/.next-internal/server/app/chats/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "getPhoneNumber",
           "filename": "app/actions/auth-action.ts"
@@ -82,7 +82,7 @@
         }
       },
       "layer": {
-        "app/dashboard/page": "rsc",
+        "app/chats/page": "action-browser",
         "app/login/page": "action-browser"
       },
       "filename": "app/actions/auth-action.ts",
@@ -90,8 +90,8 @@
     },
     "00c64bffc2841435b978a99d133798ea7c34fa994f": {
       "workers": {
-        "app/dashboard/page": {
-          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+        "app/chats/page": {
+          "moduleId": "[project]/.next-internal/server/app/chats/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "clearAuthCookies",
           "filename": "app/actions/auth-action.ts"
@@ -104,7 +104,7 @@
         }
       },
       "layer": {
-        "app/dashboard/page": "rsc",
+        "app/chats/page": "action-browser",
         "app/login/page": "action-browser"
       },
       "filename": "app/actions/auth-action.ts",
@@ -112,8 +112,8 @@
     },
     "007a07246cec034667842d7b8836119d21b74183e6": {
       "workers": {
-        "app/dashboard/page": {
-          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+        "app/chats/page": {
+          "moduleId": "[project]/.next-internal/server/app/chats/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/auth-action.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "isAuthenticated",
           "filename": "app/actions/auth-action.ts"
@@ -126,7 +126,7 @@
         }
       },
       "layer": {
-        "app/dashboard/page": "rsc",
+        "app/chats/page": "action-browser",
         "app/login/page": "action-browser"
       },
       "filename": "app/actions/auth-action.ts",

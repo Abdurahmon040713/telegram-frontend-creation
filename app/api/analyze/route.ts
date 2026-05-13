@@ -6,13 +6,12 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 /**
  * POST /api/analyze
- * Chat'ni tahlil qilish (AI sentiment analysis)
+ * Starts a background analysis job on the backend and returns {status, job_id}.
+ * The client polls GET /api/analyze/status/[jobId] until status === "done".
  */
 export async function POST(request: NextRequest) {
   try {
-    // Token'ni cookie'dan olish
     const token = await getAuthToken()
-
     if (!token) {
       return NextResponse.json(
         { detail: 'Authentifikatsiya talab qilinadi' },
@@ -21,46 +20,45 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-
-    // Zod validatsiyasi
     const validationResult = analyzeSchema.safeParse(body)
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          detail: 'Validatsiya xatoligi',
-          errors: validationResult.error.issues
-        },
+        { detail: 'Validatsiya xatoligi', errors: validationResult.error.issues },
         { status: 400 }
       )
     }
 
     const { phone, chat_id, limit } = validationResult.data
 
-    // Backend'ga token bilan tahlil so'rovini yuborish
-    const response = await fetch(`${BACKEND_URL}/analyze`, {
+    const response = await fetch(`${BACKEND_URL}/analyze/start`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        phone,
-        chat_id,
-        limit,
-      }),
+      body: JSON.stringify({ phone, chat_id, limit }),
     })
+
+    if (response.status === 401) {
+      const res = NextResponse.json(
+        { detail: "Sessiyaning muddati tugagan. Qayta kirib o'ting." },
+        { status: 401 }
+      )
+      res.cookies.delete('telegram_token')
+      res.cookies.delete('telegram_phone')
+      return res
+    }
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ detail: 'Xatolik yuz berdi' }))
       return NextResponse.json(error, { status: response.status })
     }
 
-    const data = await response.json()
-    return NextResponse.json(data)
+    return NextResponse.json(await response.json())
   } catch (error) {
-    console.error('Analyze API error:', error)
+    console.error('Analyze start error:', error)
     return NextResponse.json(
-      { detail: 'Chat tahlilida xatolik yuz berdi' },
+      { detail: 'Chat tahlilini boshlashda xatolik yuz berdi' },
       { status: 500 }
     )
   }

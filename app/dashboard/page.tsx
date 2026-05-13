@@ -2,34 +2,36 @@ import { Navbar } from "@/components/navbar"
 import { DashboardContent } from "@/components/features/dashboard/dashboard-content"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-import { serverFetch } from "@/lib/api"
+import type { StatsData } from "@/app/api/stats/route"
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 export default async function DashboardPage() {
   const cookieStore = await cookies()
   const token = cookieStore.get('telegram_token')?.value
+  const phone = cookieStore.get('telegram_phone')?.value
 
-  if (!token) {
+  if (!token || !phone) {
     redirect('/login')
   }
 
-  // Server-side data fetching - absolute URL bilan
+  let stats: StatsData | null = null
   try {
-    const phoneData = await serverFetch<{ phone: string }>('/auth/phone', {
-      method: 'GET',
+    const res = await fetch(`${BACKEND_URL}/stats`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store',
     })
-    const phone = phoneData.phone
-
-    if (!phone) {
-      redirect('/login')
+    if (res.ok) {
+      stats = await res.json()
     }
-
-    return (
-      <>
-        <Navbar />
-        <DashboardContent initialPhone={phone} />
-      </>
-    )
   } catch {
-    redirect('/login')
+    // Stats unavailable — dashboard renders with zeros gracefully
   }
+
+  return (
+    <>
+      <Navbar />
+      <DashboardContent phone={phone} stats={stats} />
+    </>
+  )
 }

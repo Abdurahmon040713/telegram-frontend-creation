@@ -84,9 +84,10 @@ __turbopack_context__.n(__TURBOPACK__imported__module__$5b$project$5d2f$componen
 "[project]/lib/api.ts [app-rsc] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
-// API Configuration
-// Eslatma: Vercel/Render ga yuklaganda NEXT_PUBLIC_API_URL ni server URL manziliga o'zgartirasiz.
+// HTTP status kodi bilan xato — useApiError.ts da to'g'ri aniqlanishi uchun
 __turbopack_context__.s([
+    "ApiError",
+    ()=>ApiError,
     "analyzeApi",
     ()=>analyzeApi,
     "authApi",
@@ -100,6 +101,15 @@ __turbopack_context__.s([
     "serverFetch",
     ()=>serverFetch
 ]);
+class ApiError extends Error {
+    status;
+    constructor(status, message){
+        super(message), this.status = status;
+        this.name = 'ApiError';
+    }
+}
+// API Configuration
+// Eslatma: Vercel/Render ga yuklaganda NEXT_PUBLIC_API_URL ni server URL manziliga o'zgartirasiz.
 const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:8001") || "http://localhost:8000";
 const API_BASE_URL = "/api" // Next.js API routes orqali (httpOnly cookies bilan)
 ;
@@ -138,7 +148,7 @@ const API_BASE_URL = "/api" // Next.js API routes orqali (httpOnly cookies bilan
                 };
             }
             console.error(`API Error [${response.status}]:`, error);
-            throw new Error(error.detail || `HTTP error! status: ${response.status}`);
+            throw new ApiError(response.status, error.detail || `HTTP error! status: ${response.status}`);
         }
         const contentType = response.headers.get('content-type');
         if (!contentType?.includes('application/json')) {

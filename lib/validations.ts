@@ -29,11 +29,11 @@ export const analyzeSchema = z.object({
   phone: z
     .string()
     .min(1, 'Telefon raqam talab qilinadi')
-    .regex(/^\+?[1-9]\d{1,14}$/, 'Noto\'g\'ri telefon raqam formati'),
+    .transform(v => v.trim().replace(/[\s\-\(\)]/g, ''))
+    .pipe(z.string().regex(/^\+?[1-9]\d{1,14}$/, 'Noto\'g\'ri telefon raqam formati')),
   chat_id: z
     .number()
-    .int('Chat ID butun son bo\'lishi kerak')
-    .positive('Chat ID musbat bo\'lishi kerak'),
+    .int('Chat ID butun son bo\'lishi kerak'),
   limit: z
     .number()
     .int()

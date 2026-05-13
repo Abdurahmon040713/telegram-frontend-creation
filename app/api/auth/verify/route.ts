@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { setAuthToken } from '@/app/actions/auth-action'
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
+const COOKIE_MAX_AGE = 24 * 60 * 60 // 24 soat — JWT muddat bilan mos
+
 /**
  * POST /api/auth/verify
- * Telefon kodi orqali verify qilish va tokenni cookie'ga saqlash
+ * Telefon kodi orqali verify qilish va tokenni cookie'ga saqlash.
+ *
+ * MUHIM: cookies() Server Action'i Route Handler'dan chaqirilganda
+ * Set-Cookie header NextResponse'ga qo'shilmaydi. Shuning uchun
+ * token to'g'ridan-to'g'ri NextResponse.cookies.set() orqali o'rnatiladi.
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { phone, code, phone_code_hash, api_id, api_hash } = body
 
-    // Validation
     if (!phone || !code || !phone_code_hash || !api_id || !api_hash) {
       return NextResponse.json(
         { detail: 'Barcha maydonlar talab qilinadi' },
@@ -20,33 +24,34 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Backend'ga verify so'rovini yuborish
-    const response = await fetch(`${BACKEND_URL}/verify`, {
+    const backendResponse = await fetch(`${BACKEND_URL}/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        phone,
-        code,
-        phone_code_hash,
-        api_id,
-        api_hash,
-      }),
+      body: JSON.stringify({ phone, code, phone_code_hash, api_id, api_hash }),
     })
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'Xatolik yuz berdi' }))
-      return NextResponse.json(error, { status: response.status })
+    if (!backendResponse.ok) {
+      const error = await backendResponse.json().catch(() => ({ detail: 'Xatolik yuz berdi' }))
+      return NextResponse.json(error, { status: backendResponse.status })
     }
 
-    const data = await response.json()
+    const data = await backendResponse.json()
+    const token = data.token || data.access_token
 
-    // Agar javobda token bo'lsa, saqlash
-    if (data.token || data.access_token) {
-      const token = data.token || data.access_token
-      await setAuthToken(token)
+    const response = NextResponse.json(data)
+
+    if (token) {
+      // NextResponse.cookies.set() — Set-Cookie header to'g'ridan-to'g'ri response'ga yoziladi
+      response.cookies.set('telegram_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: COOKIE_MAX_AGE,
+        path: '/',
+      })
     }
 
-    return NextResponse.json(data)
+    return response
   } catch (error) {
     console.error('Verify error:', error)
     return NextResponse.json(

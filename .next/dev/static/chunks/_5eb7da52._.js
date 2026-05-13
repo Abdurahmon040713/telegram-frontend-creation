@@ -220,9 +220,10 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 "[project]/lib/api.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
-// API Configuration
-// Eslatma: Vercel/Render ga yuklaganda NEXT_PUBLIC_API_URL ni server URL manziliga o'zgartirasiz.
+// HTTP status kodi bilan xato — useApiError.ts da to'g'ri aniqlanishi uchun
 __turbopack_context__.s([
+    "ApiError",
+    ()=>ApiError,
     "analyzeApi",
     ()=>analyzeApi,
     "authApi",
@@ -237,6 +238,15 @@ __turbopack_context__.s([
     ()=>serverFetch
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
+class ApiError extends Error {
+    status;
+    constructor(status, message){
+        super(message), this.status = status;
+        this.name = 'ApiError';
+    }
+}
+// API Configuration
+// Eslatma: Vercel/Render ga yuklaganda NEXT_PUBLIC_API_URL ni server URL manziliga o'zgartirasiz.
 const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:8001") || "http://localhost:8000";
 const API_BASE_URL = "/api" // Next.js API routes orqali (httpOnly cookies bilan)
 ;
@@ -275,7 +285,7 @@ const API_BASE_URL = "/api" // Next.js API routes orqali (httpOnly cookies bilan
                 };
             }
             console.error(`API Error [${response.status}]:`, error);
-            throw new Error(error.detail || `HTTP error! status: ${response.status}`);
+            throw new ApiError(response.status, error.detail || `HTTP error! status: ${response.status}`);
         }
         const contentType = response.headers.get('content-type');
         if (!contentType?.includes('application/json')) {
@@ -374,7 +384,6 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/eye.js [app-client] (ecmascript) <export default as Eye>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2d$off$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__EyeOff$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/eye-off.js [app-client] (ecmascript) <export default as EyeOff>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/loader-circle.js [app-client] (ecmascript) <export default as Loader2>");
@@ -394,10 +403,8 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-;
 function LoginForm() {
     _s();
-    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const [step, setStep] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("credentials");
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
@@ -406,8 +413,33 @@ function LoginForm() {
     const [apiHash, setApiHash] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [phone, setPhone] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [code, setCode] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [draftCode, setDraftCode] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [phoneCodeHash, setPhoneCodeHash] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [showApiHash, setShowApiHash] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const codeInputDebounce = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LoginForm.useEffect": ()=>{
+            const onUnhandledRejection = {
+                "LoginForm.useEffect.onUnhandledRejection": (event)=>{
+                    const reason = event.reason;
+                    const message = reason?.message ?? String(reason);
+                    if (typeof message === 'string' && message.includes('A listener indicated')) {
+                        event.preventDefault();
+                        console.warn('Suppressed extension unhandled rejection:', message);
+                    }
+                }
+            }["LoginForm.useEffect.onUnhandledRejection"];
+            window.addEventListener('unhandledrejection', onUnhandledRejection);
+            return ({
+                "LoginForm.useEffect": ()=>{
+                    window.removeEventListener('unhandledrejection', onUnhandledRejection);
+                    if (codeInputDebounce.current) {
+                        clearTimeout(codeInputDebounce.current);
+                    }
+                }
+            })["LoginForm.useEffect"];
+        }
+    }["LoginForm.useEffect"], []);
     const handleLogin = async (e)=>{
         e.preventDefault();
         if (loading) return; // Prevent multiple submissions
@@ -431,8 +463,7 @@ function LoginForm() {
                 setSuccess("Tasdiqlash kodi yuborildi!");
             } else if (response?.status === "authorized") {
                 setSuccess("Muvaffaqiyatli kirildi!");
-                // Cookies API route orqali avtomatik sozlanadi
-                setTimeout(()=>router.push("/dashboard"), 500);
+                window.location.href = '/dashboard';
             } else {
                 throw new Error(`Noto'g'ri javob: ${response?.status}`);
             }
@@ -455,33 +486,22 @@ function LoginForm() {
                 phone,
                 code: code.length + ' raqam'
             });
+            const verifyCode = draftCode.trim();
+            setCode(verifyCode);
             const response = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["authApi"].verify({
                 phone: phone,
-                code: code,
+                code: verifyCode,
                 phone_code_hash: phoneCodeHash,
                 api_id: Number.parseInt(apiId),
                 api_hash: apiHash
             });
             console.log('Verification javob:', response);
             if (response?.status === "success") {
-                // Token va phone raqamini cookie'ga saqlash (server-side orqali)
-                try {
-                    // Agar response'da token bo'lsa
-                    if (response?.token || response?.access_token) {
-                        const token = response.token || response.access_token;
-                        console.log('Token saqlanimoqda...');
-                        await setAuthToken(token);
-                    }
-                    // Phone raqamini ham saqlash
-                    await setPhoneNumber(phone);
-                    console.log('Phone raqam saqlandi');
-                } catch (storageError) {
-                    console.error('Token/Phone saqlash xatoligi:', storageError);
-                // Xatolik bo'lsa ham, dashboard'ga o'tish uchun davom etamiz
-                }
+                // Token verify/route.ts → NextResponse.cookies.set() orqali brauzerga yozilgan.
+                // window.location.href bilan to'liq sahifa yuklash: bu brauzer cache'ni chetlab
+                // o'tib, yangi Set-Cookie'ni middleware uchun darhol mavjud qiladi.
                 setSuccess("Muvaffaqiyatli kirildi!");
-                // Cookies API route orqali avtomatik sozlanadi
-                setTimeout(()=>router.push("/dashboard"), 500);
+                window.location.href = '/dashboard';
             } else {
                 throw new Error(`Noto'g'ri javob: ${response?.status}`);
             }
@@ -507,12 +527,12 @@ function LoginForm() {
                                 className: "h-7 w-7 text-primary-foreground"
                             }, void 0, false, {
                                 fileName: "[project]/components/features/auth/login-form.tsx",
-                                lineNumber: 129,
+                                lineNumber: 133,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/features/auth/login-form.tsx",
-                            lineNumber: 128,
+                            lineNumber: 132,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -520,7 +540,7 @@ function LoginForm() {
                             children: "Tizimga kirish"
                         }, void 0, false, {
                             fileName: "[project]/components/features/auth/login-form.tsx",
-                            lineNumber: 131,
+                            lineNumber: 135,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -528,13 +548,13 @@ function LoginForm() {
                             children: "Telegram hisobingiz orqali kiring"
                         }, void 0, false, {
                             fileName: "[project]/components/features/auth/login-form.tsx",
-                            lineNumber: 132,
+                            lineNumber: 136,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/features/auth/login-form.tsx",
-                    lineNumber: 127,
+                    lineNumber: 131,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -547,7 +567,7 @@ function LoginForm() {
                             className: "mb-4"
                         }, void 0, false, {
                             fileName: "[project]/components/features/auth/login-form.tsx",
-                            lineNumber: 136,
+                            lineNumber: 140,
                             columnNumber: 21
                         }, this),
                         success && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$alert$2d$message$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertMessage"], {
@@ -556,7 +576,7 @@ function LoginForm() {
                             className: "mb-4"
                         }, void 0, false, {
                             fileName: "[project]/components/features/auth/login-form.tsx",
-                            lineNumber: 137,
+                            lineNumber: 141,
                             columnNumber: 23
                         }, this),
                         step === "credentials" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -571,7 +591,7 @@ function LoginForm() {
                                             children: "API ID"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 142,
+                                            lineNumber: 146,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -584,13 +604,13 @@ function LoginForm() {
                                             className: "bg-background"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 143,
+                                            lineNumber: 147,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                    lineNumber: 141,
+                                    lineNumber: 145,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -601,7 +621,7 @@ function LoginForm() {
                                             children: "API Hash"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 155,
+                                            lineNumber: 159,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -617,7 +637,7 @@ function LoginForm() {
                                                     className: "bg-background pr-10"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                                    lineNumber: 157,
+                                                    lineNumber: 161,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -628,30 +648,30 @@ function LoginForm() {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/features/auth/login-form.tsx",
-                                                        lineNumber: 171,
+                                                        lineNumber: 175,
                                                         columnNumber: 36
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__["Eye"], {
                                                         className: "h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/features/auth/login-form.tsx",
-                                                        lineNumber: 171,
+                                                        lineNumber: 175,
                                                         columnNumber: 69
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                                    lineNumber: 166,
+                                                    lineNumber: 170,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 156,
+                                            lineNumber: 160,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                    lineNumber: 154,
+                                    lineNumber: 158,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -662,7 +682,7 @@ function LoginForm() {
                                             children: "Telefon raqam"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 177,
+                                            lineNumber: 181,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -675,13 +695,13 @@ function LoginForm() {
                                             className: "bg-background"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 178,
+                                            lineNumber: 182,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                    lineNumber: 176,
+                                    lineNumber: 180,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -694,7 +714,7 @@ function LoginForm() {
                                                 className: "mr-2 h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/features/auth/login-form.tsx",
-                                                lineNumber: 192,
+                                                lineNumber: 196,
                                                 columnNumber: 21
                                             }, this),
                                             "Yuborilmoqda..."
@@ -702,13 +722,13 @@ function LoginForm() {
                                     }, void 0, true) : "Kirish"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                    lineNumber: 189,
+                                    lineNumber: 193,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/auth/login-form.tsx",
-                            lineNumber: 140,
+                            lineNumber: 144,
                             columnNumber: 13
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                             onSubmit: handleVerify,
@@ -722,21 +742,31 @@ function LoginForm() {
                                             children: "Tasdiqlash kodi"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 203,
+                                            lineNumber: 207,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                             id: "code",
                                             type: "text",
                                             placeholder: "12345",
-                                            value: code,
-                                            onChange: (e)=>setCode(e.target.value),
+                                            value: draftCode,
+                                            onChange: (e)=>{
+                                                const value = e.target.value;
+                                                setDraftCode(value);
+                                                if (codeInputDebounce.current) {
+                                                    clearTimeout(codeInputDebounce.current);
+                                                }
+                                                codeInputDebounce.current = window.setTimeout(()=>{
+                                                    setCode(value);
+                                                    codeInputDebounce.current = null;
+                                                }, 300);
+                                            },
                                             required: true,
                                             className: "bg-background text-center text-2xl tracking-widest",
                                             maxLength: 6
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 204,
+                                            lineNumber: 208,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -744,13 +774,13 @@ function LoginForm() {
                                             children: "Telegram ilovasiga yuborilgan kodni kiriting"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/auth/login-form.tsx",
-                                            lineNumber: 214,
+                                            lineNumber: 228,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                    lineNumber: 202,
+                                    lineNumber: 206,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -763,7 +793,7 @@ function LoginForm() {
                                                 className: "mr-2 h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/features/auth/login-form.tsx",
-                                                lineNumber: 222,
+                                                lineNumber: 236,
                                                 columnNumber: 21
                                             }, this),
                                             "Tekshirilmoqda..."
@@ -771,7 +801,7 @@ function LoginForm() {
                                     }, void 0, true) : "Tasdiqlash"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                    lineNumber: 219,
+                                    lineNumber: 233,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -782,13 +812,13 @@ function LoginForm() {
                                     children: "Orqaga qaytish"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                    lineNumber: 230,
+                                    lineNumber: 244,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/auth/login-form.tsx",
-                            lineNumber: 201,
+                            lineNumber: 205,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -804,7 +834,7 @@ function LoginForm() {
                                     children: "my.telegram.org"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/auth/login-form.tsx",
-                                    lineNumber: 238,
+                                    lineNumber: 252,
                                     columnNumber: 13
                                 }, this),
                                 " ",
@@ -812,32 +842,28 @@ function LoginForm() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/auth/login-form.tsx",
-                            lineNumber: 236,
+                            lineNumber: 250,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/features/auth/login-form.tsx",
-                    lineNumber: 135,
+                    lineNumber: 139,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/components/features/auth/login-form.tsx",
-            lineNumber: 126,
+            lineNumber: 130,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/features/auth/login-form.tsx",
-        lineNumber: 125,
+        lineNumber: 129,
         columnNumber: 5
     }, this);
 }
-_s(LoginForm, "wAtE0GSvvKuQE9VdxZx2OP+KE4s=", false, function() {
-    return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
-    ];
-});
+_s(LoginForm, "TMCP80HCe/ijENW4SpdDcMK0GYk=");
 _c = LoginForm;
 var _c;
 __turbopack_context__.k.register(_c, "LoginForm");

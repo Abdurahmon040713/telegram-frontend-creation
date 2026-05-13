@@ -1,18 +1,23 @@
 import { NextResponse } from 'next/server'
-import { clearAuthCookies } from '@/app/actions/auth-action'
 
 /**
  * POST /api/auth/logout
- * Foydalanuvchini logout qilish (cookies o'chirish)
+ * Auth cookie'larni o'chirish.
+ *
+ * MUHIM: cookies() Server Action'i Route Handler'dan chaqirilganda
+ * Set-Cookie header NextResponse'ga qo'shilmaydi. Shuning uchun
+ * cookie'lar to'g'ridan-to'g'ri NextResponse.cookies.delete() orqali o'chiriladi.
  */
 export async function POST() {
   try {
-    await clearAuthCookies()
-
-    return NextResponse.json(
-      { status: 'success', message: 'Logout muvaffaqiyatli bajarildi' },
-      { status: 200 }
+    const response = NextResponse.json(
+      { status: 'success', message: 'Logout muvaffaqiyatli bajarildi' }
     )
+
+    response.cookies.delete('telegram_token')
+    response.cookies.delete('telegram_phone')
+
+    return response
   } catch (error) {
     console.error('Logout error:', error)
     return NextResponse.json(

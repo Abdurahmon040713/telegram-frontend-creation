@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { MessageSquare, User, Home, LogOut, Menu, X } from "lucide-react"
+import { MessageSquare, User, Home, LogOut, Menu, Search, X } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
@@ -19,6 +19,7 @@ export function Navbar() {
   const navItems = [
     { href: "/dashboard", label: "Bosh sahifa", icon: Home },
     { href: "/chats", label: "Chatlar", icon: MessageSquare },
+    { href: "/search", label: "Qidiruv", icon: Search },
     { href: "/profile", label: "Profil", icon: User },
   ]
 

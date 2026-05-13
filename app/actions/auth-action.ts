@@ -49,7 +49,7 @@ export async function setPhoneNumber(phone: string): Promise<void> {
   try {
     const cookieStore = await cookies()
     cookieStore.set(PHONE_NAME, phone, {
-      httpOnly: false,       // Client'dan ham o'qilishi mumkin
+      httpOnly: true,        // Server action orqali o'qiladi — JS access kerak emas
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: MAX_AGE,

@@ -1,17 +1,12 @@
-[00:00:02.272] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-[00:00:02.570] Server  LOG      ✓ Ready in 1876ms
-[00:00:17.088] Server  LOG      ○ Compiling / ...
-[00:00:21.815] Server  WARN     ⚠ Cross origin request detected from 10.44.176.33 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+[00:00:03.687] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:04.240] Server  LOG      ✓ Ready in 3.2s
+[00:00:13.835] Server  LOG      ○ Compiling / ...
+[00:00:22.417] Server  WARN     ⚠ Cross origin request detected from 10.44.176.33 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
-[00:00:21.962] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:22.168] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:22.168] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/login","route":"/login"}
-[00:00:22.168] Browser LOG     %c[Vercel Web Analytics]%c [view] http://10.44.176.33:3000/login color: rgb(120, 120, 120) color: inherit {"dp":"/login","o":"http://10.44.176.33:3000/login","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1778182975011} /_vercel/insights/view
-[00:00:27.748] Browser LOG     Login boshlanmoqda... {"api_id":"20332243","phone":"+998 91 283 26 82"}
-[00:00:31.713] Browser LOG     Login javob: {"phone_code_hash":"af46340d91026d12b6","status":"waiting_for_code"}
-[00:00:47.492] Browser LOG     Verification boshlanmoqda... {"code":"5 raqam","phone":"+998 91 283 26 82"}
-[00:00:48.885] Browser LOG     Verification javob: {"expires_in":86400,"status":"success","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6Iis5OTggOTEgMjgzIDI2IDgyIiwiZXhwIjoxNzc4MjY5NDAxLCJpYXQiOjE3NzgxODMwMDEsImp0aSI6IjA2MWUxNzVhLTc4MDktNDk0NS1iOTU0LWY1OGI0ZDc4YzllMyJ9.IkKNtQXFrdiKZ0AwTG47Eg49wrrHsHBfKvSYQ4groG8","token_type":"bearer"}
-[00:00:48.885] Browser LOG     Token js-cookie orqali saqlanimoqda...
-[00:00:48.885] Browser LOG     Token va phone raqam js-cookie ga saqlandi
-[00:00:50.572] Browser LOG     %c[Vercel Web Analytics]%c [view] http://10.44.176.33:3000/dashboard color: rgb(120, 120, 120) color: inherit {"dp":"/dashboard","o":"http://10.44.176.33:3000/dashboard","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1778183003319} /_vercel/insights/view
-[00:00:50.572] Browser LOG     %c[Vercel Web Analytics]%c [view] http://10.44.176.33:3000/login color: rgb(120, 120, 120) color: inherit {"dp":"/login","o":"http://10.44.176.33:3000/login","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1778183003414} /_vercel/insights/view
+[00:00:22.576] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:22.787] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:00:55.005] Server  LOG      ○ Compiling /dashboard ...
+[00:00:59.161] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:59.363] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:07:23.130] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:07:23.623] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.

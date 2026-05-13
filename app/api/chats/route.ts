@@ -5,7 +5,6 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 export async function POST(request: NextRequest) {
   try {
-    // Cookie'dan tokenni o'qish
     const token = await getAuthToken()
     if (!token) {
       return NextResponse.json(
@@ -17,32 +16,39 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { phone } = body
 
-    // Backend'ga token bilan so'rov yuborish
-    const response = await fetch(`${BACKEND_URL}/chats`, {
+    if (!phone) {
+      return NextResponse.json(
+        { detail: 'phone maydoni talab qilinadi' },
+        { status: 400 }
+      )
+    }
+
+    const backendResponse = await fetch(`${BACKEND_URL}/chats`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // ✅ TOKEN QUSHILDI
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({ phone }),
     })
 
-    if (response.status === 401) {
-      // Token muddati tugangan - logout qilish
-      const { clearAuthCookies } = await import('@/app/actions/auth-action')
-      await clearAuthCookies()
-      return NextResponse.json(
-        { detail: 'Sessiyaning muddati tugagan. Qayta kirib o\'ting.' },
+    if (backendResponse.status === 401) {
+      // Token yoki sessiya muddati tugagan — cookie'larni tozalash
+      const response = NextResponse.json(
+        { detail: "Sessiyaning muddati tugagan. Qayta kirib o'ting." },
         { status: 401 }
       )
+      response.cookies.delete('telegram_token')
+      response.cookies.delete('telegram_phone')
+      return response
     }
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'Xatolik yuz berdi' }))
-      return NextResponse.json(error, { status: response.status })
+    if (!backendResponse.ok) {
+      const error = await backendResponse.json().catch(() => ({ detail: 'Xatolik yuz berdi' }))
+      return NextResponse.json(error, { status: backendResponse.status })
     }
 
-    return response.json()
+    return NextResponse.json(await backendResponse.json())
   } catch (error) {
     console.error('Chats error:', error)
     return NextResponse.json(
