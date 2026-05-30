@@ -1,10 +1,10 @@
-import { Navbar } from "@/components/navbar"
-import { ChatsContent } from "@/components/features/chats/chats-content"
-import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
-import type { Chat } from "@/lib/api"
+import { Navbar }         from "@/components/navbar"
+import { MonitorContent } from "@/components/features/chats/monitor-content"
+import { cookies }        from "next/headers"
+import { redirect }       from "next/navigation"
+import type { Chat }      from "@/lib/api"
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
 
 export default async function ChatsPage() {
   const cookieStore = await cookies()
@@ -15,10 +15,10 @@ export default async function ChatsPage() {
     redirect('/login')
   }
 
-  // Server-side pre-fetch: backend POST /chats endpointi token va phone talab qiladi
   let initialChats: Chat[] = []
+  let redirectToLogin = false
   try {
-    const chatsResponse = await fetch(`${BACKEND_URL}/chats`, {
+    const res = await fetch(`${BACKEND_URL}/chats`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -26,22 +26,29 @@ export default async function ChatsPage() {
       },
       body: JSON.stringify({ phone }),
       cache: 'no-store',
+      signal: AbortSignal.timeout(10_000),
     })
 
-    if (chatsResponse.ok) {
-      const data = await chatsResponse.json()
+    if (res.status === 401) {
+      redirectToLogin = true
+    } else if (res.ok) {
+      const data = await res.json()
       initialChats = data.chats || []
     }
-    // Server-side xatolik bo'lsa: bo'sh ro'yxat bilan davom eting,
-    // foydalanuvchi "Yangilash" tugmasi orqali qayta yuklashi mumkin.
   } catch {
-    // Network xatolik — client-side refresh bilan hal qilinadi
+    // Network error — client-side refresh handles recovery
+  }
+
+  if (redirectToLogin) {
+    cookieStore.delete('telegram_token')
+    cookieStore.delete('telegram_phone')
+    redirect('/login')
   }
 
   return (
     <>
       <Navbar />
-      <ChatsContent initialChats={initialChats} initialPhone={phone} />
+      <MonitorContent initialChats={initialChats} initialPhone={phone} />
     </>
   )
 }

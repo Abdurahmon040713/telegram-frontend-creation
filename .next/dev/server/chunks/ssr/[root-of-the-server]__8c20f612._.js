@@ -103,7 +103,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
-const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:8001") || 'http://localhost:8000';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 async function ChatsPage() {
     const cookieStore = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cookies"])();
     const token = cookieStore.get('telegram_token')?.value;
@@ -111,8 +111,8 @@ async function ChatsPage() {
     if (!token || !phone) {
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$components$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["redirect"])('/login');
     }
-    // Server-side pre-fetch: backend POST /chats endpointi token va phone talab qiladi
     let initialChats = [];
+    let redirectToLogin = false;
     try {
         const chatsResponse = await fetch(`${BACKEND_URL}/chats`, {
             method: 'POST',
@@ -123,22 +123,29 @@ async function ChatsPage() {
             body: JSON.stringify({
                 phone
             }),
-            cache: 'no-store'
+            cache: 'no-store',
+            signal: AbortSignal.timeout(10_000)
         });
-        if (chatsResponse.ok) {
+        if (chatsResponse.status === 401) {
+            redirectToLogin = true;
+        } else if (chatsResponse.ok) {
             const data = await chatsResponse.json();
             initialChats = data.chats || [];
         }
-    // Server-side xatolik bo'lsa: bo'sh ro'yxat bilan davom eting,
-    // foydalanuvchi "Yangilash" tugmasi orqali qayta yuklashi mumkin.
+    // Non-401 errors: render with empty list — user can refresh client-side
     } catch  {
-    // Network xatolik — client-side refresh bilan hal qilinadi
+    // Network error or timeout — client-side refresh handles recovery
+    }
+    if (redirectToLogin) {
+        cookieStore.delete('telegram_token');
+        cookieStore.delete('telegram_phone');
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$components$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["redirect"])('/login');
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Fragment"], {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$navbar$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Navbar"], {}, void 0, false, {
                 fileName: "[project]/app/chats/page.tsx",
-                lineNumber: 43,
+                lineNumber: 51,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$features$2f$chats$2f$chats$2d$content$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ChatsContent"], {
@@ -146,7 +153,7 @@ async function ChatsPage() {
                 initialPhone: phone
             }, void 0, false, {
                 fileName: "[project]/app/chats/page.tsx",
-                lineNumber: 44,
+                lineNumber: 52,
                 columnNumber: 7
             }, this)
         ]

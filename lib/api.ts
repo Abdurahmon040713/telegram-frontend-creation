@@ -7,8 +7,8 @@ export class ApiError extends Error {
 }
 
 // API Configuration
-// Eslatma: Vercel/Render ga yuklaganda NEXT_PUBLIC_API_URL ni server URL manziliga o'zgartirasiz.
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+// Eslatma: Vercel/Render ga yuklaganda BACKEND_URL ni server URL manziliga o'zgartirasiz.
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
 const API_BASE_URL = "/api" // Next.js API routes orqali (httpOnly cookies bilan)
 
 /**
@@ -176,6 +176,27 @@ export const analyzeApi = {
     }),
 }
 
+// Monitor API
+export const monitorApi = {
+  start: (data: { phone: string; chat_id: number }) =>
+    apiRequest<{ status: string; chat_id: number }>("/monitor/start", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  stop: (data: { phone: string; chat_id: number }) =>
+    apiRequest<{ status: string; chat_id: number }>("/monitor/stop", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  status: () =>
+    apiRequest<{ phone: string; monitored_chats: number[] }>("/monitor/status"),
+
+  getViolations: (chatId: number) =>
+    apiRequest<{ chat_id: number; violations: ViolationRecord[] }>(`/violations/${chatId}`),
+}
+
 // Types
 export interface Chat {
   id: number
@@ -201,4 +222,12 @@ export interface User {
   phone: string
   api_id: number
   api_hash: string
+}
+
+export interface ViolationRecord {
+  user_id:    number
+  warn_count: number
+  is_muted:   boolean
+  is_banned:  boolean
+  muted_until: string | null
 }

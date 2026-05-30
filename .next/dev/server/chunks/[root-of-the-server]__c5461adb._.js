@@ -50,7 +50,7 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [app-route] (ecmascript)");
 ;
-const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:8001") || 'http://localhost:8000';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 const COOKIE_MAX_AGE = 24 * 60 * 60 // 24 soat — JWT muddat bilan mos
 ;
 async function POST(request) {
@@ -75,7 +75,8 @@ async function POST(request) {
                 phone_code_hash,
                 api_id,
                 api_hash
-            })
+            }),
+            signal: AbortSignal.timeout(10_000)
         });
         if (!backendResponse.ok) {
             const error = await backendResponse.json().catch(()=>({

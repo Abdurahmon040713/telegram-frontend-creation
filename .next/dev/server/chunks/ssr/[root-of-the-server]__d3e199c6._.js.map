@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 14, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/DC-comic/Desktop/4/BMI/loyha/telegram-frontend-creation/app/analyze/page.tsx"],"sourcesContent":["import { redirect } from 'next/navigation'\n\n// /analyze → tahlil /chats sahifasida amalga oshiriladi\nexport default function AnalyzePage() {\n  redirect('/chats')\n}\n"],"names":[],"mappings":";;;;AAAA;AAAA;;AAGe,SAAS;IACtB,IAAA,iMAAQ,EAAC;AACX"}}]
+}

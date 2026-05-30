@@ -432,7 +432,7 @@ function ProfileContent({ phone }) {
             desc: "Barcha chatlarni ko'ring"
         },
         {
-            href: "/chats",
+            href: "/analyze",
             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chart$2d$column$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__BarChart3$3e$__["BarChart3"],
             label: "Tahlil",
             desc: "Yangi tahlil boshlang"

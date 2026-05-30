@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
 
 const COOKIE_MAX_AGE = 24 * 60 * 60 // 24 soat — JWT muddat bilan mos
 
@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, code, phone_code_hash, api_id, api_hash }),
+      signal: AbortSignal.timeout(10_000),
     })
 
     if (!backendResponse.ok) {

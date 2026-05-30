@@ -44,7 +44,7 @@ module.exports = mod;
 "[project]/app/actions/auth-action.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
-/* __next_internal_action_entry_do_not_use__ [{"006bd569f72bfb24cd3556090cce045e8093c903f3":"getPhoneNumber","007a07246cec034667842d7b8836119d21b74183e6":"isAuthenticated","00c64bffc2841435b978a99d133798ea7c34fa994f":"clearAuthCookies","00cac13111a1a7857ec6f1c432c255ad2a8a888e69":"getAuthToken","40ab78069dfb465f3fc0c6e4fb4262e5e81a873946":"setPhoneNumber","40d2f971621d8ed26f78e514b1a0befc1936e7a796":"setAuthToken"},"",""] */ __turbopack_context__.s([
+/* __next_internal_action_entry_do_not_use__ [{"00035108611cd568b613d810ea8fb42a4a23ab22c3":"getPhoneNumber","00aee42763e8f97fe1308d7568430c49bb7ecd1fe6":"clearAuthCookies","00c38853a77493ea8f5a2460fcc63c8a33a55303c6":"isAuthenticated","00d778dd1c3532289cfc019d3d6dab3cbd3fe050a1":"getAuthToken","405375867bb6d640b6e3c974b276301a579e49d398":"setPhoneNumber","40ff6436f9c637d4bd6e5b0ba5f60a5996982f88be":"setAuthToken"},"",""] */ __turbopack_context__.s([
     "clearAuthCookies",
     ()=>clearAuthCookies,
     "getAuthToken",
@@ -96,7 +96,7 @@ async function setPhoneNumber(phone) {
     try {
         const cookieStore = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["cookies"])();
         cookieStore.set(PHONE_NAME, phone, {
-            httpOnly: false,
+            httpOnly: true,
             secure: ("TURBOPACK compile-time value", "development") === 'production',
             sameSite: 'lax',
             maxAge: MAX_AGE,
@@ -140,12 +140,12 @@ async function isAuthenticated() {
     clearAuthCookies,
     isAuthenticated
 ]);
-(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(setAuthToken, "40d2f971621d8ed26f78e514b1a0befc1936e7a796", null);
-(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(getAuthToken, "00cac13111a1a7857ec6f1c432c255ad2a8a888e69", null);
-(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(setPhoneNumber, "40ab78069dfb465f3fc0c6e4fb4262e5e81a873946", null);
-(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(getPhoneNumber, "006bd569f72bfb24cd3556090cce045e8093c903f3", null);
-(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(clearAuthCookies, "00c64bffc2841435b978a99d133798ea7c34fa994f", null);
-(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(isAuthenticated, "007a07246cec034667842d7b8836119d21b74183e6", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(setAuthToken, "40ff6436f9c637d4bd6e5b0ba5f60a5996982f88be", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(getAuthToken, "00d778dd1c3532289cfc019d3d6dab3cbd3fe050a1", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(setPhoneNumber, "405375867bb6d640b6e3c974b276301a579e49d398", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(getPhoneNumber, "00035108611cd568b613d810ea8fb42a4a23ab22c3", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(clearAuthCookies, "00aee42763e8f97fe1308d7568430c49bb7ecd1fe6", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(isAuthenticated, "00c38853a77493ea8f5a2460fcc63c8a33a55303c6", null);
 }),
 "[project]/app/api/chats/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
@@ -158,7 +158,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$serv
 var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$actions$2f$auth$2d$action$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/app/actions/auth-action.ts [app-route] (ecmascript)");
 ;
 ;
-const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:8001") || 'http://localhost:8000';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 async function POST(request) {
     try {
         const token = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$actions$2f$auth$2d$action$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getAuthToken"])();
@@ -186,7 +186,8 @@ async function POST(request) {
             },
             body: JSON.stringify({
                 phone
-            })
+            }),
+            signal: AbortSignal.timeout(10_000)
         });
         if (backendResponse.status === 401) {
             // Token yoki sessiya muddati tugagan — cookie'larni tozalash

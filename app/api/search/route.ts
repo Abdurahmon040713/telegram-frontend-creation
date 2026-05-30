@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAuthToken } from '@/app/actions/auth-action'
 import { z } from 'zod'
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
 
 const searchSchema = z.object({
   phone: z.string().min(1),
@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(result.data),
+      signal: AbortSignal.timeout(10_000),
     })
 
     if (response.status === 401) {

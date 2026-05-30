@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
 
 const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 // 7 kun
 
@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ api_id, api_hash, phone }),
+      signal: AbortSignal.timeout(10_000),
     })
 
     if (!backendResponse.ok) {

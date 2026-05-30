@@ -639,6 +639,8 @@ __turbopack_context__.s([
     ()=>chatsApi,
     "getPhoneFromCookie",
     ()=>getPhoneFromCookie,
+    "monitorApi",
+    ()=>monitorApi,
     "serverApiRequest",
     ()=>serverApiRequest,
     "serverFetch",
@@ -653,8 +655,8 @@ class ApiError extends Error {
     }
 }
 // API Configuration
-// Eslatma: Vercel/Render ga yuklaganda NEXT_PUBLIC_API_URL ni server URL manziliga o'zgartirasiz.
-const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:8001") || "http://localhost:8000";
+// Eslatma: Vercel/Render ga yuklaganda BACKEND_URL ni server URL manziliga o'zgartirasiz.
+const BACKEND_URL = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.BACKEND_URL || "http://localhost:8000";
 const API_BASE_URL = "/api" // Next.js API routes orqali (httpOnly cookies bilan)
 ;
 /**
@@ -777,6 +779,18 @@ const analyzeApi = {
             method: "POST",
             body: JSON.stringify(data)
         })
+};
+const monitorApi = {
+    start: (data)=>apiRequest("/monitor/start", {
+            method: "POST",
+            body: JSON.stringify(data)
+        }),
+    stop: (data)=>apiRequest("/monitor/stop", {
+            method: "POST",
+            body: JSON.stringify(data)
+        }),
+    status: ()=>apiRequest("/monitor/status"),
+    getViolations: (chatId)=>apiRequest(`/violations/${chatId}`)
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);

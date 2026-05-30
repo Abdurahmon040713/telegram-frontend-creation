@@ -1,5 +1,6 @@
 "use client"
 
+import { useId } from "react"
 import Link from "next/link"
 import {
   MessageSquare, Search, BarChart3, User,
@@ -16,11 +17,6 @@ import type { StatsData } from "@/app/api/stats/route"
 interface DashboardContentProps {
   phone: string
   stats: StatsData | null
-}
-
-function maskPhone(p: string) {
-  if (p.length < 6) return "***"
-  return p.slice(0, 3) + "•".repeat(Math.max(0, p.length - 6)) + p.slice(-3)
 }
 
 function relativeTime(iso: string | null): string {
@@ -82,6 +78,7 @@ function CustomTooltip({ active, payload, label }: {
 }
 
 export function DashboardContent({ phone, stats }: DashboardContentProps) {
+  const chartId = useId()
   const negativeRate = stats && stats.total_analyzed > 0
     ? ((stats.total_negative / stats.total_analyzed) * 100).toFixed(1)
     : "0.0"
@@ -91,7 +88,7 @@ export function DashboardContent({ phone, stats }: DashboardContentProps) {
 
   const quickActions = [
     { title: "Chatlar",  desc: "Guruh va kanallarni ko'ring",    icon: MessageSquare, href: "/chats",   gradient: "from-sky-500 to-blue-600"     },
-    { title: "Tahlil",   desc: "AI bilan negativ xabar aniqlang", icon: BarChart3,     href: "/chats",   gradient: "from-emerald-500 to-teal-600"  },
+    { title: "Tahlil",   desc: "AI bilan negativ xabar aniqlang", icon: BarChart3,     href: "/analyze", gradient: "from-emerald-500 to-teal-600"  },
     { title: "Qidiruv",  desc: "Saqlangan xabarlarni qidiring",   icon: Search,        href: "/search",  gradient: "from-violet-500 to-purple-600" },
     { title: "Profil",   desc: "Hisob ma'lumotlari",              icon: User,          href: "/profile", gradient: "from-orange-500 to-rose-500"   },
   ]
@@ -104,7 +101,7 @@ export function DashboardContent({ phone, stats }: DashboardContentProps) {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Xush kelibsiz!</h1>
           <p className="text-muted-foreground flex items-center gap-1.5 text-sm mt-1">
-            <Hash className="h-3.5 w-3.5" />{maskPhone(phone)}
+            <Hash className="h-3.5 w-3.5" />{phone}
           </p>
         </div>
 
@@ -139,11 +136,11 @@ export function DashboardContent({ phone, stats }: DashboardContentProps) {
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="gradAnalyzed" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id={`${chartId}-gradAnalyzed`} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%"  stopColor="#0ea5e9" stopOpacity={0.25} />
                     <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}    />
                   </linearGradient>
-                  <linearGradient id="gradNegative" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id={`${chartId}-gradNegative`} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%"  stopColor="#ef4444" stopOpacity={0.25} />
                     <stop offset="95%" stopColor="#ef4444" stopOpacity={0}    />
                   </linearGradient>
@@ -163,12 +160,12 @@ export function DashboardContent({ phone, stats }: DashboardContentProps) {
                 <Area
                   type="monotone" dataKey="analyzed" name="Tahlil"
                   stroke="#0ea5e9" strokeWidth={2}
-                  fill="url(#gradAnalyzed)" dot={false} activeDot={{ r: 4 }}
+                  fill={`url(#${chartId}-gradAnalyzed)`} dot={false} activeDot={{ r: 4 }}
                 />
                 <Area
                   type="monotone" dataKey="negative" name="Negativ"
                   stroke="#ef4444" strokeWidth={2}
-                  fill="url(#gradNegative)" dot={false} activeDot={{ r: 4 }}
+                  fill={`url(#${chartId}-gradNegative)`} dot={false} activeDot={{ r: 4 }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -225,11 +222,11 @@ export function DashboardContent({ phone, stats }: DashboardContentProps) {
             </div>
           ) : (
             <div className="rounded-2xl border border-border/40 bg-card overflow-hidden divide-y divide-border/40">
-              {stats.recent_analyses.map((item, idx) => {
+              {stats.recent_analyses.map((item) => {
                 const pct = item.analyzed_count > 0
                   ? Math.round((item.negative_count / item.analyzed_count) * 100) : 0
                 return (
-                  <div key={idx} className="flex items-center gap-4 px-5 py-4 hover:bg-muted/30 transition-colors">
+                  <div key={`${item.chat_id}-${item.completed_at}`} className="flex items-center gap-4 px-5 py-4 hover:bg-muted/30 transition-colors">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                       <BarChart3 className="h-4 w-4 text-primary" />
                     </div>

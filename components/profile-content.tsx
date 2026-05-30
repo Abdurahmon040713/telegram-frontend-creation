@@ -28,7 +28,7 @@ export function ProfileContent({ phone }: ProfileContentProps) {
 
   const quickLinks = [
     { href: "/chats",   icon: MessageSquare, label: "Chatlar",  desc: "Barcha chatlarni ko'ring" },
-    { href: "/chats",   icon: BarChart3,     label: "Tahlil",   desc: "Yangi tahlil boshlang"    },
+    { href: "/analyze", icon: BarChart3,     label: "Tahlil",   desc: "Yangi tahlil boshlang"    },
     { href: "/search",  icon: Search,        label: "Qidiruv",  desc: "Saqlangan xabarlar"       },
   ]
 
