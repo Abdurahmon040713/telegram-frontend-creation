@@ -1,32 +1,20 @@
-[00:00:03.164] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-[00:00:03.510] Server  LOG      ✓ Ready in 2.9s
-[00:00:31.148] Server  LOG      ○ Compiling /chats ...
-[00:00:37.986] Server  WARN     ⚠ Cross origin request detected from 10.104.174.33 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+[00:00:03.891] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:04.369] Server  LOG      ✓ Ready in 3.1s
+[00:02:56.598] Server  LOG      ○ Compiling / ...
+[00:03:05.244] Server  WARN     ⚠ Cross origin request detected from 10.104.174.33 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
-[00:00:38.090] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:38.313] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:01:00.425] Server  LOG      ○ Compiling /dashboard ...
-[00:01:14.363] Server  LOG      ○ Compiling /analyze ...
-[00:16:04.879] Server  LOG      ✓ Compiled in 294ms
-[00:17:35.348] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:17:35.786] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:23:02.566] Server  LOG      ✓ Compiled in 392ms
-[00:24:06.062] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:24:06.389] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:24:53.141] Browser ERROR   uncaughtError: Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
-[00:25:11.218] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:25:11.380] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:25:34.508] Browser ERROR   uncaughtError: Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
-[00:25:40.533] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:25:40.767] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:26:53.659] Browser ERROR   uncaughtError: Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
-[00:49:10.283] Server  LOG      ✓ Compiled in 792ms
-[00:49:10.297] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
-[00:49:12.940] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:49:14.341] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:49:30.484] Server  LOG      ✓ Compiled in 400ms
-[00:50:16.116] Server  LOG      ✓ Compiled in 218ms
-[00:51:48.879] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:51:49.195] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[01:04:25.294] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[01:04:25.555] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:03:05.375] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:03:05.640] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:04:21.573] Server  LOG      ○ Compiling /dashboard ...
+[00:04:24.935] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:04:25.343] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:08:24.746] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\.next\dev\server\chunks\[root-of-the-server]__775e0fa3._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.820] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.885] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\.next\dev\server\chunks\node_modules_next_3964d9b6._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.902] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.915] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.921] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.924] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.930] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.950] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:08:24.960] Server  ERROR   Chats error: SyntaxError: Unexpected end of JSON input

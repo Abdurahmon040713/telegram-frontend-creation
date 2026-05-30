@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthToken } from '@/app/actions/auth-action'
-import { z } from 'zod'
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
-
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
-
-const searchSchema = z.object({
-  phone:         z.string().min(1),
-  start_date:    z.string().regex(DATE_RE, 'start_date YYYY-MM-DD formatida bo\'lishi kerak'),
-  end_date:      z.string().regex(DATE_RE).optional(),
-  chat_id:       z.number().int().optional(),
-  negative_only: z.boolean().default(true),
-})
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,22 +14,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const result = searchSchema.safeParse(body)
-    if (!result.success) {
-      return NextResponse.json(
-        { detail: 'Validatsiya xatoligi', errors: result.error.issues },
-        { status: 400 }
-      )
-    }
 
-    const response = await fetch(`${BACKEND_URL}/search`, {
-      method: 'POST',
+    // Report sending can take longer than a regular search — allow 30 s.
+    const response = await fetch(`${BACKEND_URL}/report/send`, {
+      method:  'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization:  `Bearer ${token}`,
       },
-      body: JSON.stringify(result.data),
-      signal: AbortSignal.timeout(10_000),
+      body:   JSON.stringify(body),
+      signal: AbortSignal.timeout(30_000),
     })
 
     if (response.status === 401) {
@@ -60,9 +43,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(await response.json())
   } catch (error) {
-    console.error('Search error:', error)
+    console.error('Report send error:', error)
     return NextResponse.json(
-      { detail: 'Qidiruvda xatolik yuz berdi' },
+      { detail: 'Hisobot yuborishda xatolik yuz berdi' },
       { status: 500 }
     )
   }

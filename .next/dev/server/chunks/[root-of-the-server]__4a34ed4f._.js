@@ -147,7 +147,7 @@ async function isAuthenticated() {
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(clearAuthCookies, "00aee42763e8f97fe1308d7568430c49bb7ecd1fe6", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["registerServerReference"])(isAuthenticated, "00c38853a77493ea8f5a2460fcc63c8a33a55303c6", null);
 }),
-"[project]/app/api/search/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
+"[project]/app/api/report/send/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -156,19 +156,9 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [app-route] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$actions$2f$auth$2d$action$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/app/actions/auth-action.ts [app-route] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$v3$2f$external$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__z$3e$__ = __turbopack_context__.i("[project]/node_modules/zod/v3/external.js [app-route] (ecmascript) <export * as z>");
-;
 ;
 ;
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-const searchSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$v3$2f$external$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__z$3e$__["z"].object({
-    phone: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$v3$2f$external$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__z$3e$__["z"].string().min(1),
-    start_date: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$v3$2f$external$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__z$3e$__["z"].string().regex(DATE_RE, 'start_date YYYY-MM-DD formatida bo\'lishi kerak'),
-    end_date: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$v3$2f$external$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__z$3e$__["z"].string().regex(DATE_RE).optional(),
-    chat_id: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$v3$2f$external$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__z$3e$__["z"].number().int().optional(),
-    negative_only: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$v3$2f$external$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__z$3e$__["z"].boolean().default(true)
-});
 async function POST(request) {
     try {
         const token = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$actions$2f$auth$2d$action$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getAuthToken"])();
@@ -180,23 +170,15 @@ async function POST(request) {
             });
         }
         const body = await request.json();
-        const result = searchSchema.safeParse(body);
-        if (!result.success) {
-            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                detail: 'Validatsiya xatoligi',
-                errors: result.error.issues
-            }, {
-                status: 400
-            });
-        }
-        const response = await fetch(`${BACKEND_URL}/search`, {
+        // Report sending can take longer than a regular search — allow 30 s.
+        const response = await fetch(`${BACKEND_URL}/report/send`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify(result.data),
-            signal: AbortSignal.timeout(10_000)
+            body: JSON.stringify(body),
+            signal: AbortSignal.timeout(30_000)
         });
         if (response.status === 401) {
             const res = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
@@ -218,9 +200,9 @@ async function POST(request) {
         }
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json(await response.json());
     } catch (error) {
-        console.error('Search error:', error);
+        console.error('Report send error:', error);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            detail: 'Qidiruvda xatolik yuz berdi'
+            detail: 'Hisobot yuborishda xatolik yuz berdi'
         }, {
             status: 500
         });
@@ -229,4 +211,4 @@ async function POST(request) {
 }),
 ];
 
-//# sourceMappingURL=%5Broot-of-the-server%5D__b55e28b4._.js.map
+//# sourceMappingURL=%5Broot-of-the-server%5D__4a34ed4f._.js.map

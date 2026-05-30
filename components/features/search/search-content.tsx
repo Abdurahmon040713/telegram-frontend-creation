@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react"
 import {
-  AlertTriangle, Check, ChevronDown, ChevronsUpDown,
-  Filter, Loader2, Search,
+  AlertCircle, AlertTriangle, Ban, Calendar, Check,
+  ChevronDown, ChevronsUpDown, Clock, FileDown,
+  Filter, Loader2, Send, ShieldAlert, VolumeX,
 } from "lucide-react"
 import { Button }       from "@/components/ui/button"
-import { Input }        from "@/components/ui/input"
 import { Badge }        from "@/components/ui/badge"
 import { Switch }       from "@/components/ui/switch"
 import { Label }        from "@/components/ui/label"
@@ -29,6 +29,9 @@ import { useApiError }  from "@/lib/hooks/useApiError"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
+type UserStatus  = 'banned' | 'muted' | 'warned' | null
+type DatePreset  = 'today' | 'yesterday' | 'last3days' | 'custom'
+
 interface SearchResult {
   id:          number
   chat_id:     number
@@ -38,12 +41,15 @@ interface SearchResult {
   confidence:  number
   sender_id:   number | null
   analyzed_at: string | null
+  user_status: UserStatus
+  warn_count:  number | null
+  muted_until: string | null
 }
 
 interface SearchResponse {
   results: SearchResult[]
   count:   number
-  query:   string
+  query:   string        // date-range label returned by backend e.g. "2026-05-30 – 2026-05-31"
 }
 
 interface SearchContentProps {
@@ -52,16 +58,80 @@ interface SearchContentProps {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const LIMIT_OPTIONS = [
-  { value: 20,  label: "20 ta natija"  },
-  { value: 50,  label: "50 ta natija"  },
-  { value: 100, label: "100 ta natija" },
+const DATE_PRESETS: { value: DatePreset; label: string }[] = [
+  { value: 'today',     label: 'Bugun'        },
+  { value: 'yesterday', label: 'Kecha'        },
+  { value: 'last3days', label: 'Oxirgi 3 kun' },
+  { value: 'custom',    label: 'Maxsus sana'  },
 ]
 
 const CHAT_TYPE_LABELS: Record<string, string> = {
-  Group:   "Guruh",
-  Channel: "Kanal",
-  Private: "Shaxsiy",
+  Group: "Guruh", Channel: "Kanal", Private: "Shaxsiy",
+}
+
+// ── Date helpers ──────────────────────────────────────────────────────────────
+
+function toISO(d: Date): string {
+  return d.toISOString().slice(0, 10)
+}
+
+function todayLocal(): Date {
+  const n = new Date()
+  return new Date(n.getFullYear(), n.getMonth(), n.getDate())
+}
+
+function addDays(d: Date, n: number): Date {
+  return new Date(d.getTime() + n * 86_400_000)
+}
+
+function getDateRange(preset: DatePreset, custom: string): { start: string; end: string } {
+  const today = todayLocal()
+  switch (preset) {
+    case 'today':
+      return { start: toISO(today), end: toISO(addDays(today, 1)) }
+    case 'yesterday': {
+      const y = addDays(today, -1)
+      return { start: toISO(y), end: toISO(today) }
+    }
+    case 'last3days':
+      return { start: toISO(addDays(today, -3)), end: toISO(addDays(today, 1)) }
+    case 'custom': {
+      if (!custom) return { start: toISO(today), end: toISO(addDays(today, 1)) }
+      // Parse local date string "YYYY-MM-DD" avoiding timezone offset issues
+      const [y, m, d] = custom.split('-').map(Number)
+      const base = new Date(y, m - 1, d)
+      return { start: toISO(base), end: toISO(addDays(base, 1)) }
+    }
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function StatusBadge({ status, warnCount }: { status: UserStatus; warnCount: number | null }) {
+  if (status === 'banned') return (
+    <Badge className="bg-red-500/15 text-red-600 border-red-500/30 text-[10px] h-5 gap-0.5 shrink-0">
+      <Ban className="h-3 w-3" />Bloklangan
+    </Badge>
+  )
+  if (status === 'muted') return (
+    <Badge className="bg-amber-500/15 text-amber-600 border-amber-500/30 text-[10px] h-5 gap-0.5 shrink-0">
+      <VolumeX className="h-3 w-3" />Cheklangan (Mute)
+    </Badge>
+  )
+  if (status === 'warned') return (
+    <Badge className="bg-blue-500/15 text-blue-600 border-blue-500/30 text-[10px] h-5 gap-0.5 shrink-0">
+      <AlertCircle className="h-3 w-3" />Ogohlantirish · {warnCount ?? 0} ta
+    </Badge>
+  )
+  return null
+}
+
+function cardBorder(item: SearchResult): string {
+  if (item.user_status === 'banned') return "border-red-500/40 bg-red-500/5"
+  if (item.user_status === 'muted')  return "border-amber-500/30 bg-amber-500/5"
+  if (item.user_status === 'warned') return "border-blue-500/20 bg-blue-500/5"
+  if (item.is_negative)              return "border-red-500/20 bg-red-500/5"
+  return "border-border/40 bg-card"
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -69,76 +139,63 @@ const CHAT_TYPE_LABELS: Record<string, string> = {
 export function SearchContent({ initialPhone }: SearchContentProps) {
   const { handleError } = useApiError()
 
-  // Search form state
-  const [query, setQuery]               = useState("")
-  const [negativeOnly, setNegativeOnly] = useState(true)
-  const [limit, setLimit]               = useState(50)
-  const [loading, setLoading]           = useState(false)
-  const [error, setError]               = useState<string | null>(null)
-  const [results, setResults]           = useState<SearchResponse | null>(null)
+  // Core state
+  const [negativeOnly, setNegativeOnly]     = useState(true)
+  const [loading, setLoading]               = useState(false)
+  const [error, setError]                   = useState<string | null>(null)
+  const [results, setResults]               = useState<SearchResponse | null>(null)
+
+  // Date picker state
+  const [datePreset, setDatePreset]         = useState<DatePreset>('today')
+  const [customDate, setCustomDate]         = useState(toISO(todayLocal()))
 
   // Chat combobox state
-  const [chats, setChats]               = useState<Chat[]>([])
-  const [chatsLoading, setChatsLoading] = useState(false)
+  const [chats, setChats]                   = useState<Chat[]>([])
+  const [chatsLoading, setChatsLoading]     = useState(false)
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null)
-  const [comboOpen, setComboOpen]       = useState(false)
+  const [comboOpen, setComboOpen]           = useState(false)
 
-  // ── Fetch user's chats on mount ───────────────────────────────────────────────
+  // Report state
+  const [sendingReport, setSendingReport]   = useState(false)
+  const [reportSentOk, setReportSentOk]     = useState(false)
+
+  // ── Fetch chats on mount ──────────────────────────────────────────────────────
   useEffect(() => {
     if (!initialPhone) return
-    const controller = new AbortController()
+    const ctrl = new AbortController()
     setChatsLoading(true)
     fetch('/api/chats', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ phone: initialPhone }),
-      signal:  controller.signal,
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: initialPhone }), signal: ctrl.signal,
     })
       .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (Array.isArray(data?.chats)) setChats(data.chats)
-      })
-      .catch(err => {
-        if (err?.name !== 'AbortError') console.warn('Chatlar yuklanmadi:', err)
-      })
+      .then(data => { if (Array.isArray(data?.chats)) setChats(data.chats) })
+      .catch(err => { if (err?.name !== 'AbortError') console.warn('Chatlar yuklanmadi:', err) })
       .finally(() => setChatsLoading(false))
-    return () => controller.abort()
+    return () => ctrl.abort()
   }, [initialPhone])
 
-  // ── Search handler ────────────────────────────────────────────────────────────
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const trimmed = query.trim()
-    if (trimmed.length < 2) return
-
+  // ── Search ────────────────────────────────────────────────────────────────────
+  const handleSearch = async (e?: React.FormEvent) => {
+    e?.preventDefault()
     setLoading(true)
     setError(null)
     setResults(null)
 
+    const { start, end } = getDateRange(datePreset, customDate)
+
     try {
-      // Explicit typed body — no implicit coercion, clear for backend Zod schema.
-      // chat_id is a 64-bit Telegram integer (large negative for supergroups).
-      // Omit it entirely when no chat is selected so the backend searches globally.
-      const body: {
-        phone:         string
-        query:         string
-        negative_only: boolean
-        limit:         number
-        chat_id?:      number
-      } = {
+      const body: Record<string, unknown> = {
         phone:         String(initialPhone),
-        query:         trimmed,
+        start_date:    start,
+        end_date:      end,
         negative_only: Boolean(negativeOnly),
-        limit:         Number(limit),
       }
-      if (typeof selectedChatId === 'number' && Number.isFinite(selectedChatId)) {
-        body.chat_id = selectedChatId
-      }
+      if (selectedChatId !== null) body.chat_id = selectedChatId
 
       const res = await fetch('/api/search', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(body),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
       })
       if (!res.ok) {
         const errData = await res.json().catch(() => ({ detail: res.statusText }))
@@ -152,8 +209,79 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
     }
   }
 
+  // ── Report sender ─────────────────────────────────────────────────────────────
+  const handleSendReport = async () => {
+    if (!results?.results.length || selectedChatId === null) return
+    setSendingReport(true)
+    setReportSentOk(false)
+
+    const { start, end } = getDateRange(datePreset, customDate)
+
+    try {
+      const res = await fetch('/api/report/send', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: String(initialPhone), chat_id: selectedChatId,
+          start_date: start, end_date: end,
+        }),
+      })
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ detail: res.statusText }))
+        throw new ApiError(res.status, errData.detail)
+      }
+      const data = await res.json()
+      if (data.sent) {
+        setReportSentOk(true)
+        setTimeout(() => setReportSentOk(false), 4_000)
+      }
+    } catch (err: unknown) {
+      setError(await handleError(err))
+    } finally {
+      setSendingReport(false)
+    }
+  }
+
+  // ── CSV export ────────────────────────────────────────────────────────────────
+  const handleExportCSV = () => {
+    if (!results?.results.length) return
+    const BOM  = '﻿'
+    const head = ['Sana va Vaqt', 'Guruh', 'Foydalanuvchi ID', 'Jazo holati',
+                  'Aniqlash usuli', 'Ishonch (%)', 'Xabar matni']
+
+    const rows = results.results.map(item => {
+      const chat   = chats.find(c => c.id === item.chat_id)?.title ?? `Chat ${item.chat_id}`
+      const date   = item.analyzed_at ? new Date(item.analyzed_at).toLocaleString('uz-UZ') : '—'
+      const status = item.user_status === 'banned'  ? 'Bloklangan' :
+                     item.user_status === 'muted'   ? 'Cheklangan (Mute)' :
+                     item.user_status === 'warned'  ? `Ogohlantirish (${item.warn_count ?? 0})` : '—'
+      const method = item.reason === 'keyword_match' ? "Lug'at" :
+                     item.reason === 'ai_sentiment'  ? 'AI Tahlili' : '—'
+      const conf   = item.confidence > 0 ? (item.confidence * 100).toFixed(1) : '—'
+      const text   = `"${item.text.replace(/"/g, '""').replace(/\r?\n/g, ' ')}"`
+      return [date, chat, item.sender_id ?? '—', status, method, conf, text].join(',')
+    })
+
+    const csv  = BOM + [head.join(','), ...rows].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url  = URL.createObjectURL(blob)
+    const a    = Object.assign(document.createElement('a'), {
+      href: url,
+      download: `xavfsizlik-jurnali-${results.query.replace(' – ', '_')}.csv`,
+    })
+    document.body.appendChild(a); a.click()
+    document.body.removeChild(a); URL.revokeObjectURL(url)
+  }
+
   // ── Derived ───────────────────────────────────────────────────────────────────
   const selectedChat = chats.find(c => c.id === selectedChatId) ?? null
+
+  const stats = results ? {
+    banned:  results.results.filter(r => r.user_status === 'banned').length,
+    muted:   results.results.filter(r => r.user_status === 'muted').length,
+    warned:  results.results.filter(r => r.user_status === 'warned').length,
+  } : null
+
+  const canSendReport = Boolean(results?.results.length && selectedChatId !== null)
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
@@ -162,133 +290,110 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
 
         {/* ── Page header ─────────────────────────────────────────────────── */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground">Xabar qidiruvi</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Ilgari tahlil qilingan xabarlar orasidan qidiring
+          <div className="flex items-center gap-2.5 mb-1">
+            <ShieldAlert className="h-6 w-6 text-red-500 shrink-0" />
+            <h1 className="text-2xl font-bold text-foreground">Xavfsizlik Jurnali</h1>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full
+                             bg-red-500/10 text-red-600 border border-red-500/20 shrink-0">
+              Security Audit Log
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Tizim tomonidan aniqlangan va o&apos;chirilgan qoidabuzarliklar xronologiyasi
           </p>
         </div>
 
-        {/* ── Search form ─────────────────────────────────────────────────── */}
+        {/* ── Filter form ─────────────────────────────────────────────────── */}
         <form
           onSubmit={handleSearch}
           className="rounded-2xl border border-border/40 bg-card p-5 mb-6 space-y-3"
         >
-          {/* Row 1 — keyword input */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Kalit so'z kiriting (kamida 2 belgi)..."
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              className="pl-10 h-11"
-              minLength={2}
-              autoComplete="off"
-            />
+          {/* ── Date preset selector ──────────────────────────────────────── */}
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+              <Calendar className="h-3.5 w-3.5" />Hisobot sanasi
+            </p>
+            <div className="flex rounded-xl border border-border/60 overflow-hidden w-fit">
+              {DATE_PRESETS.map((p, i) => (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => setDatePreset(p.value)}
+                  className={cn(
+                    "h-9 px-4 text-sm font-medium transition-colors",
+                    i > 0 && "border-l border-border/60",
+                    datePreset === p.value
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Custom date input */}
+            {datePreset === 'custom' && (
+              <input
+                type="date"
+                value={customDate}
+                onChange={e => setCustomDate(e.target.value)}
+                max={toISO(todayLocal())}
+                className="h-9 rounded-lg border border-border/60 bg-background px-3 text-sm
+                           text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+              />
+            )}
           </div>
 
-          {/* Row 2 — filters, all h-10, single flex line */}
+          {/* ── Filters row ───────────────────────────────────────────────── */}
           <div className="flex flex-wrap items-center gap-2">
 
-            {/* ── Limit dropdown ──────────────────────────────────────────── */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-10 gap-1.5 px-3 text-sm shrink-0"
-                >
-                  {LIMIT_OPTIONS.find(o => o.value === limit)?.label ?? `${limit} ta`}
-                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-40">
-                <DropdownMenuRadioGroup
-                  value={String(limit)}
-                  onValueChange={v => setLimit(Number(v))}
-                >
-                  {LIMIT_OPTIONS.map(o => (
-                    <DropdownMenuRadioItem key={o.value} value={String(o.value)}>
-                      {o.label}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* ── Chat combobox ───────────────────────────────────────────── */}
+            {/* Chat combobox */}
             <Popover open={comboOpen} onOpenChange={setComboOpen}>
               <PopoverTrigger asChild>
                 <Button
-                  type="button"
-                  variant="outline"
-                  role="combobox"
+                  type="button" variant="outline" role="combobox"
                   aria-expanded={comboOpen}
                   className="h-10 flex-1 min-w-[170px] justify-between px-3 text-sm font-normal"
                 >
                   <span className="truncate flex-1 text-left">
-                    {selectedChat ? (
-                      <span className="font-medium text-foreground">
-                        {selectedChat.title}
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground">
-                        Barcha chatlar bo&apos;yicha
-                      </span>
-                    )}
+                    {selectedChat
+                      ? <span className="font-medium text-foreground">{selectedChat.title}</span>
+                      : <span className="text-muted-foreground">Barcha guruhlar bo&apos;yicha</span>}
                   </span>
-                  {chatsLoading ? (
-                    <Loader2 className="ml-2 h-3.5 w-3.5 animate-spin text-muted-foreground shrink-0" />
-                  ) : (
-                    <ChevronsUpDown className="ml-2 h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                  )}
+                  {chatsLoading
+                    ? <Loader2 className="ml-2 h-3.5 w-3.5 animate-spin text-muted-foreground shrink-0" />
+                    : <ChevronsUpDown className="ml-2 h-3.5 w-3.5 text-muted-foreground shrink-0" />}
                 </Button>
               </PopoverTrigger>
-
               <PopoverContent className="p-0 w-[300px]" align="start" sideOffset={6}>
                 <Command>
-                  <CommandInput placeholder="Chat nomi bo'yicha qidiring..." />
+                  <CommandInput placeholder="Guruh nomi bo'yicha qidirish..." />
                   <CommandList>
                     <CommandEmpty>
-                      {chatsLoading
-                        ? "Chatlar yuklanmoqda..."
-                        : "Chat topilmadi"}
+                      {chatsLoading ? "Guruhlar yuklanmoqda..." : "Guruh topilmadi"}
                     </CommandEmpty>
-
                     <CommandGroup>
-                      {/* "All chats" option */}
                       <CommandItem
-                        value="barcha chatlar boyicha"
-                        onSelect={() => {
-                          setSelectedChatId(null)
-                          setComboOpen(false)
-                        }}
+                        value="barcha guruhlar boyicha"
+                        onSelect={() => { setSelectedChatId(null); setComboOpen(false) }}
                         className="gap-2 cursor-pointer"
                       >
-                        <Check className={cn(
-                          "h-4 w-4 shrink-0 text-primary",
-                          selectedChatId === null ? "opacity-100" : "opacity-0"
-                        )} />
-                        <span className="font-medium">Barcha chatlar bo&apos;yicha</span>
+                        <Check className={cn("h-4 w-4 shrink-0 text-primary",
+                          selectedChatId === null ? "opacity-100" : "opacity-0")} />
+                        <span className="font-medium">Barcha guruhlar bo&apos;yicha</span>
                       </CommandItem>
-
-                      {/* Real chat list */}
                       {chats.map(chat => (
                         <CommandItem
-                          key={chat.id}
-                          value={chat.title}
+                          key={chat.id} value={chat.title}
                           onSelect={() => {
-                            setSelectedChatId(
-                              selectedChatId === chat.id ? null : chat.id
-                            )
+                            setSelectedChatId(selectedChatId === chat.id ? null : chat.id)
                             setComboOpen(false)
                           }}
                           className="gap-2 cursor-pointer"
                         >
-                          <Check className={cn(
-                            "h-4 w-4 shrink-0 text-primary",
-                            selectedChatId === chat.id ? "opacity-100" : "opacity-0"
-                          )} />
+                          <Check className={cn("h-4 w-4 shrink-0 text-primary",
+                            selectedChatId === chat.id ? "opacity-100" : "opacity-0")} />
                           <span className="flex-1 truncate">{chat.title}</span>
                           <span className="text-[11px] text-muted-foreground shrink-0 ml-1">
                             {CHAT_TYPE_LABELS[chat.type] ?? chat.type}
@@ -301,10 +406,7 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
               </PopoverContent>
             </Popover>
 
-            {/* ── "Faqat negativ" switch ──────────────────────────────────── */}
-            {/* NO onClick on wrapper — it would double-fire with onCheckedChange
-                and cause "Maximum update depth exceeded".  The Label's htmlFor
-                already forwards clicks to the Switch via HTML semantics. */}
+            {/* Faqat o'chirilganlar switch — NO onClick on wrapper */}
             <div className="flex items-center gap-2 h-10 px-3 rounded-lg border border-border/40
                             bg-background shrink-0">
               <Switch
@@ -316,36 +418,30 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
                 htmlFor="negative-only"
                 className="text-sm text-muted-foreground cursor-pointer select-none whitespace-nowrap"
               >
-                Faqat negativ
+                Faqat o&apos;chirilganlar
               </Label>
             </div>
 
-            {/* ── Search button ───────────────────────────────────────────── */}
+            {/* Search button */}
             <Button
               type="submit"
-              disabled={loading || query.trim().length < 2}
-              className="h-10 px-6 gap-2 shrink-0 min-w-[130px] sm:w-auto w-full"
+              disabled={loading}
+              className="h-10 px-6 gap-2 shrink-0 min-w-[120px]"
             >
-              {loading
-                ? <Loader2 className="h-4 w-4 animate-spin" />
-                : <Search className="h-4 w-4" />
-              }
-              <span>{loading ? "Qidirilmoqda..." : "Qidirish"}</span>
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Filter className="h-4 w-4" />}
+              <span>{loading ? "Yuklanmoqda..." : "Ko'rsatish"}</span>
             </Button>
           </div>
 
-          {/* Active filter hint */}
+          {/* Active chat filter hint */}
           {selectedChat && (
             <p className="text-xs text-muted-foreground flex items-center gap-1.5 pl-0.5">
               <Filter className="h-3 w-3" />
               Faqat{" "}
               <span className="font-medium text-foreground">{selectedChat.title}</span>{" "}
-              chatida qidiriladi
-              <button
-                type="button"
-                onClick={() => setSelectedChatId(null)}
-                className="text-primary hover:underline ml-1"
-              >
+              guruhida
+              <button type="button" onClick={() => setSelectedChatId(null)}
+                className="text-primary hover:underline ml-1">
                 Bekor qilish
               </button>
             </p>
@@ -353,86 +449,152 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
         </form>
 
         {error && (
-          <AlertMessage
-            type="error"
-            message={error}
-            onClose={() => setError(null)}
-            className="mb-6"
-          />
+          <AlertMessage type="error" message={error} onClose={() => setError(null)} className="mb-6" />
         )}
 
         {/* ── Results ─────────────────────────────────────────────────────── */}
         {results && (
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">{results.count}</span> ta natija
-                topildi —{" "}
-                <span className="font-medium text-foreground">
-                  &quot;{results.query}&quot;
+            {/* Results header */}
+            <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
+                <span className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">{results.count}</span> ta incident
+                  {" · "}
+                  <span className="font-medium text-foreground font-mono">{results.query}</span>
+                  {selectedChat && <> · {selectedChat.title}</>}
                 </span>
-                {selectedChat && (
-                  <span> · {selectedChat.title}</span>
+
+                {/* Status mini-badges */}
+                {stats && stats.banned > 0 && (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold
+                                   px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-600 border border-red-500/20">
+                    <Ban className="h-2.5 w-2.5" />{stats.banned} bloklangan
+                  </span>
                 )}
-              </span>
+                {stats && stats.muted > 0 && (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold
+                                   px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                    <VolumeX className="h-2.5 w-2.5" />{stats.muted} cheklangan
+                  </span>
+                )}
+                {stats && stats.warned > 0 && (
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold
+                                   px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 border border-blue-500/20">
+                    <AlertCircle className="h-2.5 w-2.5" />{stats.warned} ogohlantirish
+                  </span>
+                )}
+              </div>
+
+              {/* Action buttons */}
+              {results.results.length > 0 && (
+                <div className="flex items-center gap-2 shrink-0">
+                  {/* CSV */}
+                  <Button type="button" variant="outline" size="sm"
+                    onClick={handleExportCSV} className="h-8 gap-1.5 text-xs">
+                    <FileDown className="h-3.5 w-3.5" />CSV
+                  </Button>
+
+                  {/* Send report — only active when a specific chat is selected */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSendReport}
+                    disabled={sendingReport || !canSendReport}
+                    title={!canSendReport ? "Guruh tanlang" : "Hisobotni Saqlangan Xabarlarimga yuborish"}
+                    className={cn(
+                      "h-8 gap-1.5 text-xs",
+                      reportSentOk && "text-emerald-600 border-emerald-500/40 bg-emerald-500/5"
+                    )}
+                  >
+                    {sendingReport ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : reportSentOk ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : (
+                      <Send className="h-3.5 w-3.5" />
+                    )}
+                    {reportSentOk ? "Yuborildi!" : "Adminga yuborish"}
+                  </Button>
+                </div>
+              )}
             </div>
 
+            {/* No results */}
             {results.results.length === 0 ? (
               <div className="rounded-2xl border border-border/40 bg-card p-12 text-center">
-                <Search className="mx-auto h-12 w-12 text-muted-foreground/40" />
-                <p className="mt-4 text-muted-foreground">
-                  Hech narsa topilmadi. Boshqa kalit so&apos;z kiriting yoki avval chatni tahlil qiling.
+                <ShieldAlert className="mx-auto h-12 w-12 text-muted-foreground/30" />
+                <p className="mt-4 font-medium text-foreground">Incidentlar topilmadi</p>
+                <p className="mt-1 text-sm text-muted-foreground max-w-xs mx-auto">
+                  {results.query} uchun qoidabuzarliklar qayd etilmagan.
+                  Monitoring yoqilganda xabarlar avtomatik saqlanadi.
                 </p>
               </div>
             ) : (
-              <div className="space-y-3">
+              /* Incident log */
+              <div className="space-y-2.5">
                 {results.results.map((item, idx) => (
                   <div
                     key={`${item.id}-${idx}`}
-                    className={cn(
-                      "rounded-xl border p-4",
-                      item.is_negative
-                        ? "border-red-500/20 bg-red-500/5"
-                        : "border-border/40 bg-card"
-                    )}
+                    className={cn("rounded-xl border p-4 transition-colors", cardBorder(item))}
                   >
-                    <div className="flex items-start gap-3">
-                      {item.is_negative && (
-                        <AlertTriangle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          {item.reason === 'keyword_match' && (
-                            <Badge variant="secondary"
-                              className="bg-blue-500/10 text-blue-600 border-blue-500/20">
-                              Lug&apos;at
-                            </Badge>
-                          )}
-                          {item.reason === 'ai_sentiment' && (
-                            <Badge variant="secondary"
-                              className="bg-purple-500/10 text-purple-600 border-purple-500/20">
-                              AI Tahlili
-                            </Badge>
-                          )}
-                          <span className="text-xs text-muted-foreground">
-                            {chats.find(c => c.id === item.chat_id)?.title ?? `Chat ${item.chat_id}`}
-                          </span>
-                          {item.analyzed_at && (
-                            <span className="text-xs text-muted-foreground">
-                              {new Date(item.analyzed_at).toLocaleDateString('uz-UZ')}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm text-foreground whitespace-pre-wrap break-words">
-                          {item.text}
-                        </p>
-                        {item.reason === 'ai_sentiment' && item.confidence > 0 && (
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            Ishonch: {(item.confidence * 100).toFixed(1)}%
-                          </p>
+                    {/* Header: timestamp + chat + user + violation badge */}
+                    <div className="flex items-start justify-between gap-2 mb-2.5 flex-wrap">
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
+                        <Clock className="h-3 w-3 shrink-0" />
+                        <span className="font-mono">
+                          {item.analyzed_at
+                            ? new Date(item.analyzed_at).toLocaleString('uz-UZ')
+                            : '—'}
+                        </span>
+                        <span className="opacity-40">·</span>
+                        <span className="font-medium text-foreground">
+                          {chats.find(c => c.id === item.chat_id)?.title ?? `Chat ${item.chat_id}`}
+                        </span>
+                        {item.sender_id && (
+                          <>
+                            <span className="opacity-40">·</span>
+                            <span className="font-mono">User #{item.sender_id}</span>
+                          </>
                         )}
                       </div>
+                      <StatusBadge status={item.user_status} warnCount={item.warn_count} />
+                    </div>
+
+                    {/* Message text */}
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+                      <p className="text-sm text-foreground whitespace-pre-wrap break-words flex-1 leading-relaxed">
+                        {item.text}
+                      </p>
+                    </div>
+
+                    {/* Footer: detection method + confidence + mute-until */}
+                    <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                      {item.reason === 'keyword_match' && (
+                        <Badge variant="secondary"
+                          className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]">
+                          Lug&apos;at aniqladi
+                        </Badge>
+                      )}
+                      {item.reason === 'ai_sentiment' && (
+                        <Badge variant="secondary"
+                          className="bg-violet-500/10 text-violet-600 border-violet-500/20 text-[10px]">
+                          AI Tahlili
+                        </Badge>
+                      )}
+                      {item.reason === 'ai_sentiment' && item.confidence > 0 && (
+                        <span className="text-xs text-muted-foreground">
+                          Ishonch: {(item.confidence * 100).toFixed(1)}%
+                        </span>
+                      )}
+                      {item.user_status === 'muted' && item.muted_until && (
+                        <span className="text-xs text-amber-600 ml-auto">
+                          Mute tugashi: {new Date(item.muted_until).toLocaleString('uz-UZ')}
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
