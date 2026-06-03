@@ -3,8 +3,7 @@ import { DashboardContent } from "@/components/features/dashboard/dashboard-cont
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import type { StatsData } from "@/app/api/stats/route"
-
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
+import { BACKEND_URL }   from "@/lib/backend-url"
 
 function maskPhone(p: string): string {
   if (p.length < 6) return "***"

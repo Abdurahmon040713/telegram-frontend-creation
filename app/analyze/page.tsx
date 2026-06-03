@@ -3,8 +3,7 @@ import { AnalyzeContent }  from "@/components/features/analyze/analyze-content"
 import { cookies }         from "next/headers"
 import { redirect }        from "next/navigation"
 import type { Chat }       from "@/lib/api"
-
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
+import { BACKEND_URL }    from "@/lib/backend-url"
 
 export default async function AnalyzePage() {
   const cookieStore = await cookies()

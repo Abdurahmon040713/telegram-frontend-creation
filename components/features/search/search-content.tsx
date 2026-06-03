@@ -30,6 +30,7 @@ import { useApiError }  from "@/lib/hooks/useApiError"
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type UserStatus  = 'banned' | 'muted' | 'warned' | null
+type DetectReason = 'keyword_match' | 'context_weight' | 'ai_sentiment' | null
 type DatePreset  = 'today' | 'yesterday' | 'last3days' | 'custom'
 
 interface SearchResult {
@@ -37,7 +38,7 @@ interface SearchResult {
   chat_id:     number
   text:        string
   is_negative: boolean
-  reason:      'keyword_match' | 'ai_sentiment' | null
+  reason:      DetectReason
   confidence:  number
   sender_id:   number | null
   analyzed_at: string | null
@@ -254,8 +255,9 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
       const status = item.user_status === 'banned'  ? 'Bloklangan' :
                      item.user_status === 'muted'   ? 'Cheklangan (Mute)' :
                      item.user_status === 'warned'  ? `Ogohlantirish (${item.warn_count ?? 0})` : '—'
-      const method = item.reason === 'keyword_match' ? "Lug'at" :
-                     item.reason === 'ai_sentiment'  ? 'AI Tahlili' : '—'
+      const method = item.reason === 'keyword_match'  ? "Lug'at (L1)"   :
+                     item.reason === 'context_weight' ? 'Kontekst (L2)' :
+                     item.reason === 'ai_sentiment'   ? 'AI (L3)'       : '—'
       const conf   = item.confidence > 0 ? (item.confidence * 100).toFixed(1) : '—'
       const text   = `"${item.text.replace(/"/g, '""').replace(/\r?\n/g, ' ')}"`
       return [date, chat, item.sender_id ?? '—', status, method, conf, text].join(',')
@@ -576,13 +578,19 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
                       {item.reason === 'keyword_match' && (
                         <Badge variant="secondary"
                           className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]">
-                          Lug&apos;at aniqladi
+                          Lug&apos;at (L1)
+                        </Badge>
+                      )}
+                      {item.reason === 'context_weight' && (
+                        <Badge variant="secondary"
+                          className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px]">
+                          Kontekst (L2)
                         </Badge>
                       )}
                       {item.reason === 'ai_sentiment' && (
                         <Badge variant="secondary"
                           className="bg-violet-500/10 text-violet-600 border-violet-500/20 text-[10px]">
-                          AI Tahlili
+                          AI (L3)
                         </Badge>
                       )}
                       {item.reason === 'ai_sentiment' && item.confidence > 0 && (

@@ -1,10 +1,10 @@
 import { Navbar }         from "@/components/navbar"
-import { MonitorContent } from "@/components/features/chats/monitor-content"
+import { ChatsContent } from "@/components/features/chats/chats-content"
 import { cookies }        from "next/headers"
 import { redirect }       from "next/navigation"
 import type { Chat }      from "@/lib/api"
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8001'
 
 export default async function ChatsPage() {
   const cookieStore = await cookies()
@@ -48,7 +48,7 @@ export default async function ChatsPage() {
   return (
     <>
       <Navbar />
-      <MonitorContent initialChats={initialChats} initialPhone={phone} />
+      <ChatsContent initialChats={initialChats} initialPhone={phone} />
     </>
   )
 }

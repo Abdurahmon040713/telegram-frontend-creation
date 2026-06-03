@@ -1,3 +1,8 @@
+import {
+  moderationBannedClientPath,
+  moderationClientPath,
+} from "@/lib/moderation-paths"
+
 // HTTP status kodi bilan xato — useApiError.ts da to'g'ri aniqlanishi uchun
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -8,7 +13,7 @@ export class ApiError extends Error {
 
 // API Configuration
 // Eslatma: Vercel/Render ga yuklaganda BACKEND_URL ni server URL manziliga o'zgartirasiz.
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8001"
 const API_BASE_URL = "/api" // Next.js API routes orqali (httpOnly cookies bilan)
 
 /**
@@ -197,6 +202,68 @@ export const monitorApi = {
     apiRequest<{ chat_id: number; violations: ViolationRecord[] }>(`/violations/${chatId}`),
 }
 
+// Moderatsiya API — manzillar backend bilan mos: GET /api/chats/{chat_id}/banned
+export const moderationApi = {
+  /** → GET /api/chats/banned?chat_id= → backend GET /api/chats/banned?chat_id= */
+  getBanned: (chatId: number) =>
+    apiRequest<BannedListResponse>(moderationBannedClientPath(chatId)),
+
+  toggleRestriction: (chatId: number, is_enabled: boolean) =>
+    apiRequest<ToggleRestrictionResponse>(
+      moderationClientPath(chatId, "/toggle-restriction"),
+      { method: "POST", body: JSON.stringify({ is_enabled }) },
+    ),
+
+  unban: (chatId: number, userId: number) =>
+    apiRequest<{ status: string; chat_id: number; user_id: number }>(
+      moderationClientPath(chatId, `/unban/${userId}`),
+      { method: "POST", body: JSON.stringify({}) },
+    ),
+
+  mute: (chatId: number, userId: number, durationMinutes: number = 60) =>
+    apiRequest<{
+      status: string
+      chat_id: number
+      user_id: number
+      duration_minutes: number
+      muted_until: string
+    }>(moderationClientPath(chatId, `/mute/${userId}`), {
+      method: "POST",
+      body: JSON.stringify({ duration_minutes: durationMinutes }),
+    }),
+
+  unmute: (chatId: number, userId: number) =>
+    apiRequest<{
+      status: string
+      chat_id: number
+      user_id: number
+      is_muted: boolean
+      muted_until: null
+    }>(moderationClientPath(chatId, `/unmute/${userId}`), {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
+
+  resetWarns: (chatId: number, userId: number) =>
+    apiRequest<{
+      status: string
+      chat_id: number
+      user_id: number
+      warn_count: number
+      is_muted: boolean
+      is_banned: boolean
+      muted_until: null
+    }>(moderationClientPath(chatId, `/reset-warns/${userId}`), {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
+
+  getMutePresets: () =>
+    apiRequest<{
+      presets: MutePreset[]
+    }>("/chats/mute-presets"),
+}
+
 // Types
 export interface Chat {
   id: number
@@ -209,7 +276,7 @@ export interface NegativeMessage {
   text: string
   confidence: number
   sender_id: number | null
-  reason: 'keyword_match' | 'ai_sentiment'
+  reason: 'keyword_match' | 'context_weight' | 'ai_sentiment'
 }
 
 export interface AnalyzeResponse {
@@ -230,4 +297,30 @@ export interface ViolationRecord {
   is_muted:   boolean
   is_banned:  boolean
   muted_until: string | null
+}
+
+export interface BannedUser {
+  user_id: number
+  first_name: string | null
+  username: string | null
+  banned_at: string | null
+}
+
+export interface BannedListResponse {
+  chat_id: number
+  restriction_mode: boolean
+  banned_users: BannedUser[]
+  count: number
+}
+
+export interface ToggleRestrictionResponse {
+  status: string
+  chat_id: number
+  restriction_mode: boolean
+  updated_at: string
+}
+
+export interface MutePreset {
+  minutes: number
+  label: string
 }

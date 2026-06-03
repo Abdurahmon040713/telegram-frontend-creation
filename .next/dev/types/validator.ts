@@ -173,6 +173,78 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../../app/api/chats/[chatId]/banned/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats/[chatId]/banned">> = Specific
+  const handler = {} as typeof import("../../../app/api/chats/[chatId]/banned/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/chats/[chatId]/mute/[userId]/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats/[chatId]/mute/[userId]">> = Specific
+  const handler = {} as typeof import("../../../app/api/chats/[chatId]/mute/[userId]/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/chats/[chatId]/reset-warns/[userId]/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats/[chatId]/reset-warns/[userId]">> = Specific
+  const handler = {} as typeof import("../../../app/api/chats/[chatId]/reset-warns/[userId]/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/chats/[chatId]/toggle-restriction/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats/[chatId]/toggle-restriction">> = Specific
+  const handler = {} as typeof import("../../../app/api/chats/[chatId]/toggle-restriction/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/chats/[chatId]/unban/[userId]/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats/[chatId]/unban/[userId]">> = Specific
+  const handler = {} as typeof import("../../../app/api/chats/[chatId]/unban/[userId]/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/chats/[chatId]/unmute/[userId]/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats/[chatId]/unmute/[userId]">> = Specific
+  const handler = {} as typeof import("../../../app/api/chats/[chatId]/unmute/[userId]/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/chats/banned/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats/banned">> = Specific
+  const handler = {} as typeof import("../../../app/api/chats/banned/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/chats/mute-presets/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats/mute-presets">> = Specific
+  const handler = {} as typeof import("../../../app/api/chats/mute-presets/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../app/api/chats/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/chats">> = Specific

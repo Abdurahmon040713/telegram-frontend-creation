@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAuthToken } from '@/app/actions/auth-action'
 import { analyzeSchema } from '@/lib/validations'
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
+import { BACKEND_URL } from '@/lib/backend-url'
 
 /**
  * POST /api/analyze

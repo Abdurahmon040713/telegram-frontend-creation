@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthToken } from '@/app/actions/auth-action'
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
+import { BACKEND_URL } from '@/lib/backend-url'
 
 export interface ChartPoint {
   date: string

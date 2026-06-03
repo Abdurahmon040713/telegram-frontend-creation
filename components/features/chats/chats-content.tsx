@@ -4,21 +4,25 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import {
   AlertTriangle, Ban, BarChart3, ChevronDown,
   Clock, Loader2, MessageSquare, Radio,
-  RefreshCw, Search, Shield, ShieldCheck,
-  Users,
+  RefreshCw, RotateCcw, Search, Shield, ShieldAlert, ShieldCheck,
+  Timer, Users, Volume2, VolumeX,
 } from "lucide-react"
 import { Button }        from "@/components/ui/button"
 import { Input }         from "@/components/ui/input"
 import { Badge }         from "@/components/ui/badge"
 import {
-  DropdownMenu, DropdownMenuContent,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuRadioGroup, DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { AlertMessage }  from "@/components/alert-message"
-import { chatsApi, ApiError, type Chat, type AnalyzeResponse } from "@/lib/api"
+import {
+  chatsApi, ApiError, moderationApi,
+  type Chat, type AnalyzeResponse, type ViolationRecord, type MutePreset,
+} from "@/lib/api"
 import { cn }            from "@/lib/utils"
 import { useApiError }   from "@/lib/hooks/useApiError"
+import { BlacklistPanel } from "@/components/features/chats/blacklist-panel"
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -33,17 +37,23 @@ const LIMIT_OPTIONS = [
 const POLL_INTERVAL_MS = 2_000
 const POLL_TIMEOUT_MS  = 5 * 60_000
 
+const FALLBACK_MUTE_PRESETS: MutePreset[] = [
+  { minutes: 5,     label: "5 daqiqa" },
+  { minutes: 15,    label: "15 daqiqa" },
+  { minutes: 30,    label: "30 daqiqa" },
+  { minutes: 60,    label: "1 soat" },
+  { minutes: 180,   label: "3 soat" },
+  { minutes: 360,   label: "6 soat" },
+  { minutes: 720,   label: "12 soat" },
+  { minutes: 1440,  label: "1 kun" },
+  { minutes: 4320,  label: "3 kun" },
+  { minutes: 10080, label: "1 hafta" },
+]
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-interface ViolationRecord {
-  user_id:    number
-  warn_count: number
-  is_muted:   boolean
-  is_banned:  boolean
-  muted_until: string | null
-}
-
-type RightPanel = 'analysis' | 'monitor'
+type RightPanel = 'analysis' | 'monitor' | 'blacklist'
+type ViolationAction = 'mute' | 'unmute' | 'reset-warns'
 
 interface ChatsContentProps {
   initialChats: Chat[]
@@ -74,12 +84,26 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
   const [monitorLoading, setMonitorLoading]         = useState<number | null>(null)
   const [violations, setViolations]                 = useState<ViolationRecord[] | null>(null)
   const [violationsLoading, setViolationsLoading]   = useState(false)
+  const [violationAction, setViolationAction]     = useState<{
+    userId: number
+    action: ViolationAction
+  } | null>(null)
+  const [mutePresets, setMutePresets] = useState<MutePreset[]>(FALLBACK_MUTE_PRESETS)
 
   // Refs
   const abortRef = useRef<AbortController | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   // Prevents concurrent violations fetches (e.g. tab-switch + auto-fetch racing)
   const violationsInFlight = useRef(false)
+
+  // ── Birinchi guruhni avtomatik tanlash ───────────────────────────────────────
+  useEffect(() => {
+    if (selectedChat) return
+    const first =
+      initialChats.find((c) => c.type === "Group") ??
+      initialChats.find((c) => c.type === "Channel")
+    if (first) setSelectedChat(first)
+  }, [initialChats, selectedChat])
 
   // ── On mount: fetch which chats are already monitored ────────────────────────
   useEffect(() => {
@@ -96,6 +120,17 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
       abortRef.current?.abort()
       if (timerRef.current) clearInterval(timerRef.current)
     }
+  }, [])
+
+  // ── On mount: fetch mute duration presets ────────────────────────────────────
+  useEffect(() => {
+    moderationApi.getMutePresets()
+      .then(data => {
+        if (Array.isArray(data?.presets) && data.presets.length) {
+          setMutePresets(data.presets)
+        }
+      })
+      .catch(() => {})
   }, [])
 
   // ── Timer helpers ─────────────────────────────────────────────────────────────
@@ -246,6 +281,64 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
     }
   }, [handleError])
 
+  const patchViolation = useCallback(
+    (userId: number, patch: Partial<ViolationRecord>) => {
+      setViolations((prev) =>
+        prev?.map((v) => (v.user_id === userId ? { ...v, ...patch } : v)) ?? null,
+      )
+    },
+    [],
+  )
+
+  const handleMute = async (chatId: number, userId: number, durationMinutes: number) => {
+    setViolationAction({ userId, action: "mute" })
+    setError(null)
+    try {
+      const res = await moderationApi.mute(chatId, userId, durationMinutes)
+      patchViolation(userId, {
+        is_muted: true,
+        muted_until: res.muted_until,
+      })
+    } catch (err: unknown) {
+      setError(await handleError(err))
+    } finally {
+      setViolationAction(null)
+    }
+  }
+
+  const handleUnmute = async (chatId: number, userId: number) => {
+    setViolationAction({ userId, action: "unmute" })
+    setError(null)
+    try {
+      const res = await moderationApi.unmute(chatId, userId)
+      patchViolation(userId, {
+        is_muted: res.is_muted,
+        muted_until: res.muted_until,
+      })
+    } catch (err: unknown) {
+      setError(await handleError(err))
+    } finally {
+      setViolationAction(null)
+    }
+  }
+
+  const handleResetWarns = async (chatId: number, userId: number) => {
+    setViolationAction({ userId, action: "reset-warns" })
+    setError(null)
+    try {
+      const res = await moderationApi.resetWarns(chatId, userId)
+      patchViolation(userId, {
+        warn_count: res.warn_count,
+        is_muted: res.is_muted,
+        muted_until: res.muted_until,
+      })
+    } catch (err: unknown) {
+      setError(await handleError(err))
+    } finally {
+      setViolationAction(null)
+    }
+  }
+
   // ── Chat list refresh ─────────────────────────────────────────────────────────
   const handleRefresh = async () => {
     setLoading(true)
@@ -260,9 +353,21 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
     }
   }
 
+  // ── Guruh tanlash (veb panel) ───────────────────────────────────────────────
+  const selectChat = useCallback((chat: Chat) => {
+    setSelectedChat(chat)
+    setError(null)
+    if (rightPanel === "monitor" && !violationsInFlight.current && !violationsLoading) {
+      handleFetchViolations(chat.id)
+    }
+  }, [rightPanel, violationsLoading, handleFetchViolations])
+
   // ── Derived values ────────────────────────────────────────────────────────────
   const filteredChats = chats.filter(chat =>
     chat.title.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  const groupChats = filteredChats.filter(
+    (c) => c.type === "Group" || c.type === "Channel",
   )
 
   const getChatIcon = (type: string) => {
@@ -291,9 +396,9 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
         {/* ── Header ──────────────────────────────────────────────────────── */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Chatlar</h1>
+            <h1 className="text-2xl font-bold text-foreground">Guruhlar boshqaruvi</h1>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <span>{chats.length} ta chat</span>
+              <span>{chats.length} ta guruh va kanal</span>
               {monitoredChats.size > 0 && (
                 <span className="inline-flex items-center gap-1 text-emerald-500 text-xs font-medium">
                   <ShieldCheck className="h-3.5 w-3.5" />
@@ -339,140 +444,175 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Chatlarni qidirish..."
+            placeholder="Guruhlarni qidirish..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="pl-10 bg-card"
           />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
 
-          {/* ── Chat list ───────────────────────────────────────────────── */}
-          <div className="space-y-2">
-            {filteredChats.length === 0 ? (
-              <div className="rounded-xl border border-border/40 bg-card p-8 text-center">
-                <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground" />
-                <p className="mt-4 text-muted-foreground">Chat topilmadi</p>
+          {/* ── Chap: guruhlar ro'yxati ─────────────────────────────────── */}
+          <aside className="w-full lg:w-[min(100%,380px)] shrink-0 space-y-3">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground px-1">
+              Boshqariladigan guruhlar
+            </p>
+            <div className="rounded-xl border border-border/50 bg-card overflow-hidden max-h-[min(70vh,640px)] overflow-y-auto">
+              {groupChats.length === 0 ? (
+                <div className="p-8 text-center">
+                  <MessageSquare className="mx-auto h-10 w-10 text-muted-foreground/50" />
+                  <p className="mt-3 text-sm text-muted-foreground">Guruh topilmadi</p>
+                </div>
+              ) : (
+                groupChats.map((chat) => {
+                  const Icon = getChatIcon(chat.type)
+                  const isMonitored = monitoredChats.has(chat.id)
+                  const isSelected = selectedChat?.id === chat.id
+
+                  return (
+                    <button
+                      key={chat.id}
+                      type="button"
+                      onClick={() => selectChat(chat)}
+                      className={cn(
+                        "w-full flex items-center gap-3 px-4 py-3.5 text-left border-b border-border/30 last:border-b-0 transition-colors",
+                        isSelected
+                          ? "bg-primary/10 border-l-2 border-l-primary"
+                          : "hover:bg-muted/40",
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
+                          chat.type === "Group"
+                            ? "bg-emerald-500/10 text-emerald-600"
+                            : "bg-violet-500/10 text-violet-600",
+                        )}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground truncate text-sm">
+                          {chat.title}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                          ID: {chat.id}
+                        </p>
+                      </div>
+                      {isMonitored && (
+                        <ShieldCheck
+                          className="h-4 w-4 shrink-0 text-emerald-500"
+                          aria-label="Kuzatilmoqda"
+                        />
+                      )}
+                    </button>
+                  )
+                })
+              )}
+            </div>
+          </aside>
+
+          {/* ── O'ng: tanlangan guruh + tablar ───────────────────────────── */}
+          <main className="flex-1 min-w-0 lg:sticky lg:top-24">
+
+            {!selectedChat ? (
+              <div className="rounded-2xl border border-border/50 bg-card p-12 text-center min-h-[420px] flex flex-col items-center justify-center">
+                <Users className="h-14 w-14 text-muted-foreground/30" />
+                <h2 className="mt-4 text-lg font-semibold text-foreground">
+                  Guruhni tanlang
+                </h2>
+                <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+                  Chap ro&apos;yxatdan guruhni tanlang. O&apos;ng tomonda tahlil,
+                  monitoring va qora ro&apos;yxat bo&apos;limlari ochiladi.
+                </p>
               </div>
             ) : (
-              filteredChats.map(chat => {
-                const Icon        = getChatIcon(chat.type)
-                const isMonitored = monitoredChats.has(chat.id)
-                const isSelected  = selectedChat?.id === chat.id
+              <>
+            {/* Guruh sarlavhasi + tezkor amallar */}
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <h2 className="text-lg font-semibold text-foreground truncate">
+                  {selectedChat.title}
+                </h2>
+                <p className="text-xs text-muted-foreground font-mono mt-0.5">
+                  chat_id: {selectedChat.id} · {selectedChat.type}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <Button
+                  size="sm"
+                  variant={monitoredChats.has(selectedChat.id) ? "default" : "outline"}
+                  onClick={() => handleMonitorToggle(selectedChat)}
+                  disabled={monitorLoading === selectedChat.id || analyzing === selectedChat.id}
+                  className={cn(
+                    monitoredChats.has(selectedChat.id) &&
+                      "bg-emerald-600 hover:bg-emerald-700 border-emerald-600",
+                  )}
+                >
+                  {monitorLoading === selectedChat.id ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
+                  ) : (
+                    <Shield className="h-3.5 w-3.5 mr-1.5" />
+                  )}
+                  {monitoredChats.has(selectedChat.id) ? "Kuzatuvni to'xtatish" : "Monitoring"}
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setRightPanel("analysis")
+                    handleAnalyze(selectedChat)
+                  }}
+                  disabled={analyzing === selectedChat.id}
+                >
+                  {analyzing === selectedChat.id ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
+                  ) : (
+                    <BarChart3 className="h-3.5 w-3.5 mr-1.5" />
+                  )}
+                  Tahlilni boshlash
+                </Button>
+              </div>
+            </div>
 
-                return (
-                  <div
-                    key={chat.id}
+            {/* 3 ta tab */}
+            {analyzing === null && (
+              <div
+                role="tablist"
+                className="flex rounded-t-xl overflow-hidden border border-border/50 border-b-0 bg-card"
+              >
+                {(
+                  [
+                    { id: "analysis" as const, label: "Tahlil", icon: BarChart3 },
+                    { id: "monitor" as const, label: "Monitoring", icon: Shield },
+                    { id: "blacklist" as const, label: "Qora ro'yxat", icon: ShieldAlert },
+                  ] as const
+                ).map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    role="tab"
+                    aria-selected={rightPanel === id}
+                    onClick={() => {
+                      setRightPanel(id)
+                      if (id === "monitor" && !violationsInFlight.current && !violationsLoading) {
+                        handleFetchViolations(selectedChat.id)
+                      }
+                    }}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl border border-border/40 bg-card p-4 transition-colors",
-                      isSelected && "border-primary/40 bg-primary/5",
+                      "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors",
+                      rightPanel === id
+                        ? "bg-primary/10 text-primary border-b-2 border-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/30",
                     )}
                   >
-                    {/* Icon */}
-                    <div className={cn(
-                      "flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
-                      chat.type === "Group"
-                        ? "bg-emerald-500/10 text-emerald-500"
-                        : chat.type === "Channel"
-                          ? "bg-violet-500/10 text-violet-500"
-                          : "bg-sky-500/10 text-sky-500",
-                    )}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-
-                    {/* Title */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <h3 className="font-medium text-foreground truncate">{chat.title}</h3>
-                        {isMonitored && (
-                          <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
-                        )}
-                      </div>
-                      <p className="text-xs text-muted-foreground">{chat.type}</p>
-                    </div>
-
-                    {/* Monitor toggle button */}
-                    <Button
-                      size="sm"
-                      variant={isMonitored ? "default" : "outline"}
-                      onClick={() => handleMonitorToggle(chat)}
-                      disabled={monitorLoading === chat.id || analyzing === chat.id}
-                      className={cn(
-                        "h-8 w-8 shrink-0 p-0",
-                        isMonitored && "bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-white",
-                      )}
-                      title={isMonitored ? "Kuzatuvni to'xtatish" : "Kuzatuvni boshlash"}
-                    >
-                      {monitorLoading === chat.id ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      ) : isMonitored ? (
-                        <ShieldCheck className="h-3.5 w-3.5" />
-                      ) : (
-                        <Shield className="h-3.5 w-3.5" />
-                      )}
-                    </Button>
-
-                    {/* Analyze button */}
-                    <Button
-                      size="sm"
-                      onClick={() => handleAnalyze(chat)}
-                      disabled={analyzing === chat.id}
-                    >
-                      {analyzing === chat.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <>
-                          <BarChart3 className="mr-1.5 h-3.5 w-3.5" />
-                          Tahlil
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                )
-              })
-            )}
-          </div>
-
-          {/* ── Right panel ─────────────────────────────────────────────── */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
-
-            {/* Tabs — only when a chat is selected and not analyzing */}
-            {selectedChat && analyzing === null && (
-              <div className="flex border-b border-border/40 mb-0 rounded-t-2xl overflow-hidden bg-card border border-border/40 border-b-0">
-                <button
-                  onClick={() => setRightPanel('analysis')}
-                  className={cn(
-                    "flex-1 px-4 py-3 text-sm font-medium transition-colors",
-                    rightPanel === 'analysis'
-                      ? "bg-primary/10 text-primary border-b-2 border-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
-                  )}
-                >
-                  <BarChart3 className="inline h-3.5 w-3.5 mr-1.5" />
-                  Tahlil
-                </button>
-                <button
-                  onClick={() => {
-                    setRightPanel('monitor')
-                    // Only fetch if no in-flight request already running
-                    if (selectedChat && !violationsInFlight.current && !violationsLoading) {
-                      handleFetchViolations(selectedChat.id)
-                    }
-                  }}
-                  className={cn(
-                    "flex-1 px-4 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-1.5",
-                    rightPanel === 'monitor'
-                      ? "bg-primary/10 text-primary border-b-2 border-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
-                  )}
-                >
-                  <Shield className="h-3.5 w-3.5" />
-                  Monitoring
-                  {monitoredChats.has(selectedChat.id) && (
-                    <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                  )}
-                </button>
+                    <Icon className="h-4 w-4 shrink-0" />
+                    {label}
+                    {id === "monitor" && monitoredChats.has(selectedChat.id) && (
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    )}
+                  </button>
+                ))}
               </div>
             )}
 
@@ -499,8 +639,22 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                 </Button>
               </div>
 
+            /* ── Qora ro'yxat paneli ─────────────────────────────── */
+            ) : rightPanel === "blacklist" ? (
+                <div
+                  className={cn(
+                    "border border-border/50 bg-card p-6 rounded-b-xl",
+                    analyzing === null && "rounded-tr-xl",
+                  )}
+                >
+                  <BlacklistPanel
+                    chatId={selectedChat.id}
+                    onError={(msg) => setError(msg)}
+                  />
+                </div>
+
             /* ── Analysis results panel ────────────────────────────── */
-            ) : rightPanel === 'analysis' ? (
+            ) : rightPanel === "analysis" ? (
               analysisResult && selectedChat ? (
                 <div className={cn(
                   "border border-border/40 bg-card p-6",
@@ -537,13 +691,19 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                                 {msg.reason === 'keyword_match' && (
                                   <Badge variant="secondary"
                                     className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]">
-                                    Lug&apos;at
+                                    Lug&apos;at (L1)
+                                  </Badge>
+                                )}
+                                {msg.reason === 'context_weight' && (
+                                  <Badge variant="secondary"
+                                    className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px]">
+                                    Kontekst (L2)
                                   </Badge>
                                 )}
                                 {msg.reason === 'ai_sentiment' && (
                                   <Badge variant="secondary"
                                     className="bg-purple-500/10 text-purple-600 border-purple-500/20 text-[10px]">
-                                    AI Tahlili
+                                    AI (L3)
                                   </Badge>
                                 )}
                               </div>
@@ -660,7 +820,19 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
                           {violations.length} ta qoidabuzarlik
                         </p>
-                        {violations.map((v, idx) => (
+                        {violations.map((v, idx) => {
+                          const isMuting =
+                            violationAction?.userId === v.user_id &&
+                            violationAction.action === "mute"
+                          const isUnmuting =
+                            violationAction?.userId === v.user_id &&
+                            violationAction.action === "unmute"
+                          const isResetting =
+                            violationAction?.userId === v.user_id &&
+                            violationAction.action === "reset-warns"
+                          const busy = isMuting || isUnmuting || isResetting
+
+                          return (
                           <div
                             key={`${v.user_id}-${idx}`}
                             className={cn(
@@ -672,35 +844,109 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                                   : "border-border/40 bg-muted/20"
                             )}
                           >
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-sm font-mono text-foreground">
-                                User #{v.user_id}
-                              </span>
-                              <div className="flex gap-1.5">
-                                {v.is_banned && (
-                                  <Badge className="bg-red-500/10 text-red-500 border-red-500/20 text-[10px] h-5">
-                                    <Ban className="h-3 w-3 mr-0.5" />
-                                    Bloklangan
-                                  </Badge>
+                            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                              <div className="min-w-0 flex-1">
+                                <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                                  <span className="text-sm font-mono text-foreground">
+                                    User #{v.user_id}
+                                  </span>
+                                  {v.is_banned && (
+                                    <Badge className="bg-red-500/10 text-red-500 border-red-500/20 text-[10px] h-5">
+                                      <Ban className="h-3 w-3 mr-0.5" />
+                                      Bloklangan
+                                    </Badge>
+                                  )}
+                                  {v.is_muted && !v.is_banned && (
+                                    <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-[10px] h-5">
+                                      Jimtirilgan
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                  Ogohlantirish:{" "}
+                                  <span className="font-medium text-foreground">{v.warn_count}</span>
+                                  {v.muted_until && (
+                                    <span className="ml-2 opacity-70">
+                                      · {new Date(v.muted_until).toLocaleString("uz-UZ")}
+                                    </span>
+                                  )}
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1.5 shrink-0 sm:items-end">
+                                {/* Jimlantirish (mute) — jimlantirilMAgan va banlanMAgan uchun */}
+                                {!v.is_muted && !v.is_banned && selectedChat && (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="h-8 text-xs border-orange-500/40 text-orange-600 hover:bg-orange-500/10 dark:text-orange-400"
+                                        disabled={busy}
+                                      >
+                                        {isMuting ? (
+                                          <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                                        ) : (
+                                          <VolumeX className="h-3.5 w-3.5 mr-1" />
+                                        )}
+                                        Jimlantirish
+                                        <ChevronDown className="h-3 w-3 ml-1 opacity-60" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-44">
+                                      {mutePresets.map(preset => (
+                                        <DropdownMenuItem
+                                          key={preset.minutes}
+                                          onClick={() => handleMute(selectedChat.id, v.user_id, preset.minutes)}
+                                          className="text-xs gap-2 cursor-pointer"
+                                        >
+                                          <Timer className="h-3.5 w-3.5 text-orange-500" />
+                                          {preset.label}
+                                        </DropdownMenuItem>
+                                      ))}
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
                                 )}
-                                {v.is_muted && !v.is_banned && (
-                                  <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-[10px] h-5">
-                                    Jimtirilgan
-                                  </Badge>
+                                {/* Cheklovni olish (unmute) — jimlantirilgan uchun */}
+                                {v.is_muted && !v.is_banned && selectedChat && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-8 text-xs border-amber-500/40 text-amber-700 hover:bg-amber-500/10 dark:text-amber-400"
+                                    disabled={busy}
+                                    onClick={() => handleUnmute(selectedChat.id, v.user_id)}
+                                  >
+                                    {isUnmuting ? (
+                                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                                    ) : (
+                                      <Volume2 className="h-3.5 w-3.5 mr-1" />
+                                    )}
+                                    Cheklovni olish
+                                  </Button>
                                 )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-8 text-xs"
+                                  disabled={
+                                    busy ||
+                                    (v.warn_count === 0 && !v.is_muted && !v.muted_until)
+                                  }
+                                  onClick={() =>
+                                    selectedChat && handleResetWarns(selectedChat.id, v.user_id)
+                                  }
+                                >
+                                  {isResetting ? (
+                                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                                  ) : (
+                                    <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                                  )}
+                                  Ogohlantirishni nolga tushirish
+                                </Button>
                               </div>
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                              Ogohlantirish:{" "}
-                              <span className="font-medium text-foreground">{v.warn_count}</span>
-                              {v.muted_until && (
-                                <span className="ml-2 opacity-70">
-                                  · {new Date(v.muted_until).toLocaleString('uz-UZ')}
-                                </span>
-                              )}
-                            </p>
                           </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     ) : violations !== null ? (
                       <div className="text-center py-8">
@@ -722,7 +968,9 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                 )}
               </div>
             )}
-          </div>
+              </>
+            )}
+          </main>
         </div>
       </div>
     </div>

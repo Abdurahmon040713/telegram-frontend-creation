@@ -565,6 +565,8 @@ __turbopack_context__.s([
     ()=>chatsApi,
     "getPhoneFromCookie",
     ()=>getPhoneFromCookie,
+    "moderationApi",
+    ()=>moderationApi,
     "monitorApi",
     ()=>monitorApi,
     "serverApiRequest",
@@ -717,6 +719,27 @@ const monitorApi = {
         }),
     status: ()=>apiRequest("/monitor/status"),
     getViolations: (chatId)=>apiRequest(`/violations/${chatId}`)
+};
+const moderationApi = {
+    getBanned: (chatId)=>apiRequest(`/chats/${chatId}/banned`),
+    toggleRestriction: (chatId, is_enabled)=>apiRequest(`/chats/${chatId}/toggle-restriction`, {
+            method: "POST",
+            body: JSON.stringify({
+                is_enabled
+            })
+        }),
+    unban: (chatId, userId)=>apiRequest(`/chats/${chatId}/unban/${userId}`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    unmute: (chatId, userId)=>apiRequest(`/chats/${chatId}/unmute/${userId}`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    resetWarns: (chatId, userId)=>apiRequest(`/chats/${chatId}/reset-warns/${userId}`, {
+            method: "POST",
+            body: JSON.stringify({})
+        })
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);

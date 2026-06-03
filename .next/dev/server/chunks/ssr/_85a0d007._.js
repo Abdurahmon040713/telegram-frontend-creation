@@ -1319,14 +1319,14 @@ function StatusBadge({ status, warnCount }) {
                 className: "h-3 w-3"
             }, void 0, false, {
                 fileName: "[project]/components/features/search/search-content.tsx",
-                lineNumber: 113,
+                lineNumber: 114,
                 columnNumber: 7
             }, this),
             "Bloklangan"
         ]
     }, void 0, true, {
         fileName: "[project]/components/features/search/search-content.tsx",
-        lineNumber: 112,
+        lineNumber: 113,
         columnNumber: 5
     }, this);
     if (status === 'muted') return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1336,14 +1336,14 @@ function StatusBadge({ status, warnCount }) {
                 className: "h-3 w-3"
             }, void 0, false, {
                 fileName: "[project]/components/features/search/search-content.tsx",
-                lineNumber: 118,
+                lineNumber: 119,
                 columnNumber: 7
             }, this),
             "Cheklangan (Mute)"
         ]
     }, void 0, true, {
         fileName: "[project]/components/features/search/search-content.tsx",
-        lineNumber: 117,
+        lineNumber: 118,
         columnNumber: 5
     }, this);
     if (status === 'warned') return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1353,7 +1353,7 @@ function StatusBadge({ status, warnCount }) {
                 className: "h-3 w-3"
             }, void 0, false, {
                 fileName: "[project]/components/features/search/search-content.tsx",
-                lineNumber: 123,
+                lineNumber: 124,
                 columnNumber: 7
             }, this),
             "Ogohlantirish · ",
@@ -1362,7 +1362,7 @@ function StatusBadge({ status, warnCount }) {
         ]
     }, void 0, true, {
         fileName: "[project]/components/features/search/search-content.tsx",
-        lineNumber: 122,
+        lineNumber: 123,
         columnNumber: 5
     }, this);
     return null;
@@ -1503,7 +1503,7 @@ function SearchContent({ initialPhone }) {
             const chat = chats.find((c)=>c.id === item.chat_id)?.title ?? `Chat ${item.chat_id}`;
             const date = item.analyzed_at ? new Date(item.analyzed_at).toLocaleString('uz-UZ') : '—';
             const status = item.user_status === 'banned' ? 'Bloklangan' : item.user_status === 'muted' ? 'Cheklangan (Mute)' : item.user_status === 'warned' ? `Ogohlantirish (${item.warn_count ?? 0})` : '—';
-            const method = item.reason === 'keyword_match' ? "Lug'at" : item.reason === 'ai_sentiment' ? 'AI Tahlili' : '—';
+            const method = item.reason === 'keyword_match' ? "Lug'at (L1)" : item.reason === 'context_weight' ? 'Kontekst (L2)' : item.reason === 'ai_sentiment' ? 'AI (L3)' : '—';
             const conf = item.confidence > 0 ? (item.confidence * 100).toFixed(1) : '—';
             const text = `"${item.text.replace(/"/g, '""').replace(/\r?\n/g, ' ')}"`;
             return [
@@ -1559,7 +1559,7 @@ function SearchContent({ initialPhone }) {
                                     className: "h-6 w-6 text-red-500 shrink-0"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 294,
+                                    lineNumber: 296,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -1567,7 +1567,7 @@ function SearchContent({ initialPhone }) {
                                     children: "Xavfsizlik Jurnali"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 295,
+                                    lineNumber: 297,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1575,13 +1575,13 @@ function SearchContent({ initialPhone }) {
                                     children: "Security Audit Log"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 296,
+                                    lineNumber: 298,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/search/search-content.tsx",
-                            lineNumber: 293,
+                            lineNumber: 295,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1589,13 +1589,13 @@ function SearchContent({ initialPhone }) {
                             children: "Tizim tomonidan aniqlangan va o'chirilgan qoidabuzarliklar xronologiyasi"
                         }, void 0, false, {
                             fileName: "[project]/components/features/search/search-content.tsx",
-                            lineNumber: 301,
+                            lineNumber: 303,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/features/search/search-content.tsx",
-                    lineNumber: 292,
+                    lineNumber: 294,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1612,14 +1612,14 @@ function SearchContent({ initialPhone }) {
                                             className: "h-3.5 w-3.5"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 314,
+                                            lineNumber: 316,
                                             columnNumber: 15
                                         }, this),
                                         "Hisobot sanasi"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 313,
+                                    lineNumber: 315,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1631,12 +1631,12 @@ function SearchContent({ initialPhone }) {
                                             children: p.label
                                         }, p.value, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 318,
+                                            lineNumber: 320,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 316,
+                                    lineNumber: 318,
                                     columnNumber: 13
                                 }, this),
                                 datePreset === 'custom' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1647,13 +1647,13 @@ function SearchContent({ initialPhone }) {
                                     className: "h-9 rounded-lg border border-border/60 bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 337,
+                                    lineNumber: 339,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/search/search-content.tsx",
-                            lineNumber: 312,
+                            lineNumber: 314,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1679,43 +1679,43 @@ function SearchContent({ initialPhone }) {
                                                             children: selectedChat.title
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                                            lineNumber: 361,
+                                                            lineNumber: 363,
                                                             columnNumber: 25
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-muted-foreground",
                                                             children: "Barcha guruhlar bo'yicha"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                                            lineNumber: 362,
+                                                            lineNumber: 364,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/features/search/search-content.tsx",
-                                                        lineNumber: 359,
+                                                        lineNumber: 361,
                                                         columnNumber: 19
                                                     }, this),
                                                     chatsLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
                                                         className: "ml-2 h-3.5 w-3.5 animate-spin text-muted-foreground shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/features/search/search-content.tsx",
-                                                        lineNumber: 365,
+                                                        lineNumber: 367,
                                                         columnNumber: 23
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevrons$2d$up$2d$down$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronsUpDown$3e$__["ChevronsUpDown"], {
                                                         className: "ml-2 h-3.5 w-3.5 text-muted-foreground shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/features/search/search-content.tsx",
-                                                        lineNumber: 366,
+                                                        lineNumber: 368,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/features/search/search-content.tsx",
-                                                lineNumber: 354,
+                                                lineNumber: 356,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 353,
+                                            lineNumber: 355,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$popover$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PopoverContent"], {
@@ -1728,7 +1728,7 @@ function SearchContent({ initialPhone }) {
                                                         placeholder: "Guruh nomi bo'yicha qidirish..."
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/features/search/search-content.tsx",
-                                                        lineNumber: 371,
+                                                        lineNumber: 373,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$command$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CommandList"], {
@@ -1737,7 +1737,7 @@ function SearchContent({ initialPhone }) {
                                                                 children: chatsLoading ? "Guruhlar yuklanmoqda..." : "Guruh topilmadi"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/features/search/search-content.tsx",
-                                                                lineNumber: 373,
+                                                                lineNumber: 375,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$command$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CommandGroup"], {
@@ -1754,7 +1754,7 @@ function SearchContent({ initialPhone }) {
                                                                                 className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("h-4 w-4 shrink-0 text-primary", selectedChatId === null ? "opacity-100" : "opacity-0")
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/components/features/search/search-content.tsx",
-                                                                                lineNumber: 382,
+                                                                                lineNumber: 384,
                                                                                 columnNumber: 25
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1762,13 +1762,13 @@ function SearchContent({ initialPhone }) {
                                                                                 children: "Barcha guruhlar bo'yicha"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/components/features/search/search-content.tsx",
-                                                                                lineNumber: 384,
+                                                                                lineNumber: 386,
                                                                                 columnNumber: 25
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/components/features/search/search-content.tsx",
-                                                                        lineNumber: 377,
+                                                                        lineNumber: 379,
                                                                         columnNumber: 23
                                                                     }, this),
                                                                     chats.map((chat)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$command$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CommandItem"], {
@@ -1783,7 +1783,7 @@ function SearchContent({ initialPhone }) {
                                                                                     className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("h-4 w-4 shrink-0 text-primary", selectedChatId === chat.id ? "opacity-100" : "opacity-0")
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                                                    lineNumber: 395,
+                                                                                    lineNumber: 397,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1791,7 +1791,7 @@ function SearchContent({ initialPhone }) {
                                                                                     children: chat.title
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                                                    lineNumber: 397,
+                                                                                    lineNumber: 399,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1799,42 +1799,42 @@ function SearchContent({ initialPhone }) {
                                                                                     children: CHAT_TYPE_LABELS[chat.type] ?? chat.type
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                                                    lineNumber: 398,
+                                                                                    lineNumber: 400,
                                                                                     columnNumber: 27
                                                                                 }, this)
                                                                             ]
                                                                         }, chat.id, true, {
                                                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                                                            lineNumber: 387,
+                                                                            lineNumber: 389,
                                                                             columnNumber: 25
                                                                         }, this))
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/features/search/search-content.tsx",
-                                                                lineNumber: 376,
+                                                                lineNumber: 378,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/features/search/search-content.tsx",
-                                                        lineNumber: 372,
+                                                        lineNumber: 374,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/features/search/search-content.tsx",
-                                                lineNumber: 370,
+                                                lineNumber: 372,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 369,
+                                            lineNumber: 371,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 352,
+                                    lineNumber: 354,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1846,7 +1846,7 @@ function SearchContent({ initialPhone }) {
                                             onCheckedChange: setNegativeOnly
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 412,
+                                            lineNumber: 414,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -1855,13 +1855,13 @@ function SearchContent({ initialPhone }) {
                                             children: "Faqat o'chirilganlar"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 417,
+                                            lineNumber: 419,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 410,
+                                    lineNumber: 412,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1873,32 +1873,32 @@ function SearchContent({ initialPhone }) {
                                             className: "h-4 w-4 animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 431,
+                                            lineNumber: 433,
                                             columnNumber: 26
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$filter$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Filter$3e$__["Filter"], {
                                             className: "h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 431,
+                                            lineNumber: 433,
                                             columnNumber: 73
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             children: loading ? "Yuklanmoqda..." : "Ko'rsatish"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 432,
+                                            lineNumber: 434,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 426,
+                                    lineNumber: 428,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/search/search-content.tsx",
-                            lineNumber: 349,
+                            lineNumber: 351,
                             columnNumber: 11
                         }, this),
                         selectedChat && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1908,7 +1908,7 @@ function SearchContent({ initialPhone }) {
                                     className: "h-3 w-3"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 439,
+                                    lineNumber: 441,
                                     columnNumber: 15
                                 }, this),
                                 "Faqat",
@@ -1918,7 +1918,7 @@ function SearchContent({ initialPhone }) {
                                     children: selectedChat.title
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 441,
+                                    lineNumber: 443,
                                     columnNumber: 15
                                 }, this),
                                 " ",
@@ -1930,19 +1930,19 @@ function SearchContent({ initialPhone }) {
                                     children: "Bekor qilish"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 443,
+                                    lineNumber: 445,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/search/search-content.tsx",
-                            lineNumber: 438,
+                            lineNumber: 440,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/features/search/search-content.tsx",
-                    lineNumber: 307,
+                    lineNumber: 309,
                     columnNumber: 9
                 }, this),
                 error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$alert$2d$message$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertMessage"], {
@@ -1952,7 +1952,7 @@ function SearchContent({ initialPhone }) {
                     className: "mb-6"
                 }, void 0, false, {
                     fileName: "[project]/components/features/search/search-content.tsx",
-                    lineNumber: 452,
+                    lineNumber: 454,
                     columnNumber: 11
                 }, this),
                 results && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1967,7 +1967,7 @@ function SearchContent({ initialPhone }) {
                                             className: "h-4 w-4 text-muted-foreground shrink-0"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 461,
+                                            lineNumber: 463,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1978,7 +1978,7 @@ function SearchContent({ initialPhone }) {
                                                     children: results.count
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 463,
+                                                    lineNumber: 465,
                                                     columnNumber: 19
                                                 }, this),
                                                 " ta incident",
@@ -1988,7 +1988,7 @@ function SearchContent({ initialPhone }) {
                                                     children: results.query
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 465,
+                                                    lineNumber: 467,
                                                     columnNumber: 19
                                                 }, this),
                                                 selectedChat && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -2000,7 +2000,7 @@ function SearchContent({ initialPhone }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 462,
+                                            lineNumber: 464,
                                             columnNumber: 17
                                         }, this),
                                         stats && stats.banned > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2010,7 +2010,7 @@ function SearchContent({ initialPhone }) {
                                                     className: "h-2.5 w-2.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 473,
+                                                    lineNumber: 475,
                                                     columnNumber: 21
                                                 }, this),
                                                 stats.banned,
@@ -2018,7 +2018,7 @@ function SearchContent({ initialPhone }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 471,
+                                            lineNumber: 473,
                                             columnNumber: 19
                                         }, this),
                                         stats && stats.muted > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2028,7 +2028,7 @@ function SearchContent({ initialPhone }) {
                                                     className: "h-2.5 w-2.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 479,
+                                                    lineNumber: 481,
                                                     columnNumber: 21
                                                 }, this),
                                                 stats.muted,
@@ -2036,7 +2036,7 @@ function SearchContent({ initialPhone }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 477,
+                                            lineNumber: 479,
                                             columnNumber: 19
                                         }, this),
                                         stats && stats.warned > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2046,7 +2046,7 @@ function SearchContent({ initialPhone }) {
                                                     className: "h-2.5 w-2.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 485,
+                                                    lineNumber: 487,
                                                     columnNumber: 21
                                                 }, this),
                                                 stats.warned,
@@ -2054,13 +2054,13 @@ function SearchContent({ initialPhone }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 483,
+                                            lineNumber: 485,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 460,
+                                    lineNumber: 462,
                                     columnNumber: 15
                                 }, this),
                                 results.results.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2077,14 +2077,14 @@ function SearchContent({ initialPhone }) {
                                                     className: "h-3.5 w-3.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 496,
+                                                    lineNumber: 498,
                                                     columnNumber: 21
                                                 }, this),
                                                 "CSV"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 494,
+                                            lineNumber: 496,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2100,38 +2100,38 @@ function SearchContent({ initialPhone }) {
                                                     className: "h-3.5 w-3.5 animate-spin"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 513,
+                                                    lineNumber: 515,
                                                     columnNumber: 23
                                                 }, this) : reportSentOk ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {
                                                     className: "h-3.5 w-3.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 515,
+                                                    lineNumber: 517,
                                                     columnNumber: 23
                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$send$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Send$3e$__["Send"], {
                                                     className: "h-3.5 w-3.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 517,
+                                                    lineNumber: 519,
                                                     columnNumber: 23
                                                 }, this),
                                                 reportSentOk ? "Yuborildi!" : "Adminga yuborish"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 500,
+                                            lineNumber: 502,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 492,
+                                    lineNumber: 494,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/search/search-content.tsx",
-                            lineNumber: 459,
+                            lineNumber: 461,
                             columnNumber: 13
                         }, this),
                         results.results.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2141,7 +2141,7 @@ function SearchContent({ initialPhone }) {
                                     className: "mx-auto h-12 w-12 text-muted-foreground/30"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 528,
+                                    lineNumber: 530,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2149,7 +2149,7 @@ function SearchContent({ initialPhone }) {
                                     children: "Incidentlar topilmadi"
                                 }, void 0, false, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 529,
+                                    lineNumber: 531,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2160,13 +2160,13 @@ function SearchContent({ initialPhone }) {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 530,
+                                    lineNumber: 532,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/features/search/search-content.tsx",
-                            lineNumber: 527,
+                            lineNumber: 529,
                             columnNumber: 15
                         }, this) : /* Incident log */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "space-y-2.5",
@@ -2183,7 +2183,7 @@ function SearchContent({ initialPhone }) {
                                                             className: "h-3 w-3 shrink-0"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                                            lineNumber: 546,
+                                                            lineNumber: 548,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2191,7 +2191,7 @@ function SearchContent({ initialPhone }) {
                                                             children: item.analyzed_at ? new Date(item.analyzed_at).toLocaleString('uz-UZ') : '—'
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                                            lineNumber: 547,
+                                                            lineNumber: 549,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2199,7 +2199,7 @@ function SearchContent({ initialPhone }) {
                                                             children: "·"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                                            lineNumber: 552,
+                                                            lineNumber: 554,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2207,7 +2207,7 @@ function SearchContent({ initialPhone }) {
                                                             children: chats.find((c)=>c.id === item.chat_id)?.title ?? `Chat ${item.chat_id}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                                            lineNumber: 553,
+                                                            lineNumber: 555,
                                                             columnNumber: 25
                                                         }, this),
                                                         item.sender_id && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -2217,7 +2217,7 @@ function SearchContent({ initialPhone }) {
                                                                     children: "·"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                                    lineNumber: 558,
+                                                                    lineNumber: 560,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2228,7 +2228,7 @@ function SearchContent({ initialPhone }) {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                                    lineNumber: 559,
+                                                                    lineNumber: 561,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
@@ -2236,7 +2236,7 @@ function SearchContent({ initialPhone }) {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 545,
+                                                    lineNumber: 547,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StatusBadge, {
@@ -2244,13 +2244,13 @@ function SearchContent({ initialPhone }) {
                                                     warnCount: item.warn_count
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 563,
+                                                    lineNumber: 565,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 544,
+                                            lineNumber: 546,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2260,7 +2260,7 @@ function SearchContent({ initialPhone }) {
                                                     className: "h-4 w-4 text-red-400 shrink-0 mt-0.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 568,
+                                                    lineNumber: 570,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2268,13 +2268,13 @@ function SearchContent({ initialPhone }) {
                                                     children: item.text
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 569,
+                                                    lineNumber: 571,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 567,
+                                            lineNumber: 569,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2283,19 +2283,28 @@ function SearchContent({ initialPhone }) {
                                                 item.reason === 'keyword_match' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
                                                     variant: "secondary",
                                                     className: "bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]",
-                                                    children: "Lug'at aniqladi"
+                                                    children: "Lug'at (L1)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 577,
+                                                    lineNumber: 579,
+                                                    columnNumber: 25
+                                                }, this),
+                                                item.reason === 'context_weight' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
+                                                    variant: "secondary",
+                                                    className: "bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px]",
+                                                    children: "Kontekst (L2)"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/components/features/search/search-content.tsx",
+                                                    lineNumber: 585,
                                                     columnNumber: 25
                                                 }, this),
                                                 item.reason === 'ai_sentiment' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
                                                     variant: "secondary",
                                                     className: "bg-violet-500/10 text-violet-600 border-violet-500/20 text-[10px]",
-                                                    children: "AI Tahlili"
+                                                    children: "AI (L3)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 583,
+                                                    lineNumber: 591,
                                                     columnNumber: 25
                                                 }, this),
                                                 item.reason === 'ai_sentiment' && item.confidence > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2307,7 +2316,7 @@ function SearchContent({ initialPhone }) {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 589,
+                                                    lineNumber: 597,
                                                     columnNumber: 25
                                                 }, this),
                                                 item.user_status === 'muted' && item.muted_until && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2318,41 +2327,41 @@ function SearchContent({ initialPhone }) {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                                    lineNumber: 594,
+                                                    lineNumber: 602,
                                                     columnNumber: 25
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/features/search/search-content.tsx",
-                                            lineNumber: 575,
+                                            lineNumber: 577,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, `${item.id}-${idx}`, true, {
                                     fileName: "[project]/components/features/search/search-content.tsx",
-                                    lineNumber: 539,
+                                    lineNumber: 541,
                                     columnNumber: 19
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/components/features/search/search-content.tsx",
-                            lineNumber: 537,
+                            lineNumber: 539,
                             columnNumber: 15
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/features/search/search-content.tsx",
-                    lineNumber: 457,
+                    lineNumber: 459,
                     columnNumber: 11
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/components/features/search/search-content.tsx",
-            lineNumber: 289,
+            lineNumber: 291,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/features/search/search-content.tsx",
-        lineNumber: 288,
+        lineNumber: 290,
         columnNumber: 5
     }, this);
 }

@@ -103,7 +103,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8001';
 async function ChatsPage() {
     const cookieStore = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cookies"])();
     const token = cookieStore.get('telegram_token')?.value;
@@ -114,7 +114,7 @@ async function ChatsPage() {
     let initialChats = [];
     let redirectToLogin = false;
     try {
-        const chatsResponse = await fetch(`${BACKEND_URL}/chats`, {
+        const res = await fetch(`${BACKEND_URL}/chats`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -126,15 +126,14 @@ async function ChatsPage() {
             cache: 'no-store',
             signal: AbortSignal.timeout(10_000)
         });
-        if (chatsResponse.status === 401) {
+        if (res.status === 401) {
             redirectToLogin = true;
-        } else if (chatsResponse.ok) {
-            const data = await chatsResponse.json();
+        } else if (res.ok) {
+            const data = await res.json();
             initialChats = data.chats || [];
         }
-    // Non-401 errors: render with empty list — user can refresh client-side
     } catch  {
-    // Network error or timeout — client-side refresh handles recovery
+    // Network error — client-side refresh handles recovery
     }
     if (redirectToLogin) {
         cookieStore.delete('telegram_token');
@@ -145,7 +144,7 @@ async function ChatsPage() {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$navbar$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Navbar"], {}, void 0, false, {
                 fileName: "[project]/app/chats/page.tsx",
-                lineNumber: 51,
+                lineNumber: 50,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$features$2f$chats$2f$chats$2d$content$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ChatsContent"], {
@@ -153,7 +152,7 @@ async function ChatsPage() {
                 initialPhone: phone
             }, void 0, false, {
                 fileName: "[project]/app/chats/page.tsx",
-                lineNumber: 52,
+                lineNumber: 51,
                 columnNumber: 7
             }, this)
         ]

@@ -874,6 +874,8 @@ __turbopack_context__.s([
     ()=>chatsApi,
     "getPhoneFromCookie",
     ()=>getPhoneFromCookie,
+    "moderationApi",
+    ()=>moderationApi,
     "monitorApi",
     ()=>monitorApi,
     "serverApiRequest",
@@ -1026,6 +1028,27 @@ const monitorApi = {
         }),
     status: ()=>apiRequest("/monitor/status"),
     getViolations: (chatId)=>apiRequest(`/violations/${chatId}`)
+};
+const moderationApi = {
+    getBanned: (chatId)=>apiRequest(`/chats/${chatId}/banned`),
+    toggleRestriction: (chatId, is_enabled)=>apiRequest(`/chats/${chatId}/toggle-restriction`, {
+            method: "POST",
+            body: JSON.stringify({
+                is_enabled
+            })
+        }),
+    unban: (chatId, userId)=>apiRequest(`/chats/${chatId}/unban/${userId}`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    unmute: (chatId, userId)=>apiRequest(`/chats/${chatId}/unmute/${userId}`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    resetWarns: (chatId, userId)=>apiRequest(`/chats/${chatId}/reset-warns/${userId}`, {
+            method: "POST",
+            body: JSON.stringify({})
+        })
 };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
@@ -2060,19 +2083,28 @@ function AnalyzeContent({ initialChats, initialPhone }) {
                                                                                     msg.reason === 'keyword_match' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
                                                                                         variant: "secondary",
                                                                                         className: "bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]",
-                                                                                        children: "Lug'at"
+                                                                                        children: "Lug'at (L1)"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/components/features/analyze/analyze-content.tsx",
                                                                                         lineNumber: 469,
                                                                                         columnNumber: 37
                                                                                     }, this),
-                                                                                    msg.reason === 'ai_sentiment' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
+                                                                                    msg.reason === 'context_weight' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
                                                                                         variant: "secondary",
-                                                                                        className: "bg-violet-500/10 text-violet-600 border-violet-500/20 text-[10px]",
-                                                                                        children: "AI Tahlili"
+                                                                                        className: "bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px]",
+                                                                                        children: "Kontekst (L2)"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/components/features/analyze/analyze-content.tsx",
                                                                                         lineNumber: 475,
+                                                                                        columnNumber: 37
+                                                                                    }, this),
+                                                                                    msg.reason === 'ai_sentiment' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
+                                                                                        variant: "secondary",
+                                                                                        className: "bg-violet-500/10 text-violet-600 border-violet-500/20 text-[10px]",
+                                                                                        children: "AI (L3)"
+                                                                                    }, void 0, false, {
+                                                                                        fileName: "[project]/components/features/analyze/analyze-content.tsx",
+                                                                                        lineNumber: 481,
                                                                                         columnNumber: 37
                                                                                     }, this),
                                                                                     msg.sender_id && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2083,7 +2115,7 @@ function AnalyzeContent({ initialChats, initialPhone }) {
                                                                                         ]
                                                                                     }, void 0, true, {
                                                                                         fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                                                                        lineNumber: 481,
+                                                                                        lineNumber: 487,
                                                                                         columnNumber: 37
                                                                                     }, this)
                                                                                 ]
@@ -2097,7 +2129,7 @@ function AnalyzeContent({ initialChats, initialPhone }) {
                                                                                 children: msg.text
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                                                                lineNumber: 486,
+                                                                                lineNumber: 492,
                                                                                 columnNumber: 33
                                                                             }, this),
                                                                             msg.reason === 'ai_sentiment' && msg.confidence > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2109,7 +2141,7 @@ function AnalyzeContent({ initialChats, initialPhone }) {
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                                                                lineNumber: 490,
+                                                                                lineNumber: 496,
                                                                                 columnNumber: 35
                                                                             }, this)
                                                                         ]
@@ -2159,12 +2191,12 @@ function AnalyzeContent({ initialChats, initialPhone }) {
                                             className: "h-8 w-8 text-violet-500"
                                         }, void 0, false, {
                                             fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                            lineNumber: 508,
+                                            lineNumber: 514,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                        lineNumber: 507,
+                                        lineNumber: 513,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -2172,7 +2204,7 @@ function AnalyzeContent({ initialChats, initialPhone }) {
                                         children: "AI Tahlil paneli"
                                     }, void 0, false, {
                                         fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                        lineNumber: 510,
+                                        lineNumber: 516,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2185,7 +2217,7 @@ function AnalyzeContent({ initialChats, initialPhone }) {
                                                 children: '"Tahlil"'
                                             }, void 0, false, {
                                                 fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                                lineNumber: 513,
+                                                lineNumber: 519,
                                                 columnNumber: 19
                                             }, this),
                                             " ",
@@ -2193,13 +2225,13 @@ function AnalyzeContent({ initialChats, initialPhone }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                        lineNumber: 511,
+                                        lineNumber: 517,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/features/analyze/analyze-content.tsx",
-                                lineNumber: 506,
+                                lineNumber: 512,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {

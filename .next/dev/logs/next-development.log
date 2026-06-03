@@ -1,20 +1,61 @@
-[00:00:03.891] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-[00:00:04.369] Server  LOG      ✓ Ready in 3.1s
-[00:02:56.598] Server  LOG      ○ Compiling / ...
-[00:03:05.244] Server  WARN     ⚠ Cross origin request detected from 10.104.174.33 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+[00:00:03.816] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:04.359] Server  LOG      ✓ Ready in 3.3s
+[00:01:13.016] Server  LOG      ○ Compiling / ...
+[00:01:21.986] Server  WARN     ⚠ Cross origin request detected from 10.104.174.33 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
-[00:03:05.375] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:03:05.640] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:04:21.573] Server  LOG      ○ Compiling /dashboard ...
-[00:04:24.935] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:04:25.343] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:08:24.746] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\.next\dev\server\chunks\[root-of-the-server]__775e0fa3._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.820] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.885] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\.next\dev\server\chunks\node_modules_next_3964d9b6._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.902] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\base-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.915] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\next-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.921] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\dev\next-dev-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.924] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\trace\trace.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.930] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\lib\router-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.950] Server  ERROR   C:\Users\DC-comic\Desktop\4\BMI\loyha\telegram-frontend-creation\node_modules\next\dist\server\lib\start-server.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
-[00:08:24.960] Server  ERROR   Chats error: SyntaxError: Unexpected end of JSON input
+[00:01:22.171] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:22.245] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:01:57.319] Server  LOG      ○ Compiling /dashboard ...
+[00:02:00.720] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:01.167] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:24:45.631] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:45.880] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:28:27.224] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[01:37:08.578] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:37:08.846] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:00:17.538] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:00:17.782] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:00:30.037] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[02:10:52.180] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:10:52.349] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:10:58.160] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[02:12:19.835] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[02:12:24.315] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[02:12:25.469] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[02:12:44.504] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[02:13:25.447] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:13:25.614] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:13:32.346] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[02:17:25.865] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:17:26.090] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:17:30.712] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[03:07:02.044] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:07:02.302] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[03:07:07.898] Browser ERROR   API Error [400]: {"detail":"Bad Request: chat not found"}
+[03:09:25.391] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:09:25.535] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[03:22:26.705] Server  LOG      ○ Compiling /analyze ...
+[04:10:05.044] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:10:05.310] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[04:44:16.590] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:44:16.800] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[04:48:42.702] Server  LOG      ✓ Compiled in 1019ms
+[04:50:18.689] Server  LOG      ✓ Compiled in 572ms
+[04:53:29.274] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:53:29.440] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[04:56:17.426] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:56:17.633] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[05:05:49.691] Server  LOG      ✓ Compiled in 420ms
+[05:05:55.104] Server  LOG      ✓ Compiled in 163ms
+[05:06:03.574] Server  LOG      ✓ Compiled in 197ms
+[05:06:06.077] Browser ERROR   API Error [404]: {"detail":"Not Found"}
+[05:06:13.109] Server  LOG      ✓ Compiled in 162ms
+[05:06:23.507] Server  LOG      ✓ Compiled in 151ms
+[05:06:45.623] Server  LOG      ✓ Compiled in 976ms
+[05:15:24.908] Browser ERROR   API Error [404]: {"detail":"Not Found"}
+[05:20:24.467] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[05:20:24.708] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[05:20:25.190] Browser ERROR   API Error [404]: {"detail":"Not Found"}
+[05:20:30.425] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[05:20:30.570] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[05:20:31.057] Browser ERROR   API Error [404]: {"detail":"Not Found"}

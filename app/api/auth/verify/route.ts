@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000'
+import { BACKEND_URL } from '@/lib/backend-url'
 
 const COOKIE_MAX_AGE = 24 * 60 * 60 // 24 soat — JWT muddat bilan mos
 

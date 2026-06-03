@@ -468,13 +468,19 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                                   {msg.reason === 'keyword_match' && (
                                     <Badge variant="secondary"
                                       className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]">
-                                      Lug&apos;at
+                                      Lug&apos;at (L1)
+                                    </Badge>
+                                  )}
+                                  {msg.reason === 'context_weight' && (
+                                    <Badge variant="secondary"
+                                      className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px]">
+                                      Kontekst (L2)
                                     </Badge>
                                   )}
                                   {msg.reason === 'ai_sentiment' && (
                                     <Badge variant="secondary"
                                       className="bg-violet-500/10 text-violet-600 border-violet-500/20 text-[10px]">
-                                      AI Tahlili
+                                      AI (L3)
                                     </Badge>
                                   )}
                                   {msg.sender_id && (
