@@ -847,9 +847,15 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                               <div className="min-w-0 flex-1">
                                 <div className="flex flex-wrap items-center gap-1.5 mb-1">
-                                  <span className="text-sm font-mono text-foreground">
-                                    User #{v.user_id}
+                                  <span className="text-sm font-medium text-foreground">
+                                    {v.first_name || (v.username ? `@${v.username}` : `ID ${v.user_id}`)}
                                   </span>
+                                  {v.username && v.first_name && (
+                                    <span className="text-[11px] text-muted-foreground">@{v.username}</span>
+                                  )}
+                                  {!v.first_name && !v.username && (
+                                    <span className="text-[11px] text-muted-foreground font-mono">#{v.user_id}</span>
+                                  )}
                                   {v.is_banned && (
                                     <Badge className="bg-red-500/10 text-red-500 border-red-500/20 text-[10px] h-5">
                                       <Ban className="h-3 w-3 mr-0.5" />

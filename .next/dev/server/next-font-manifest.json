@@ -1,9 +1,5 @@
 {
   "app": {
-    "[project]/app/analyze/page": [
-      "static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
-      "static/media/797e433ab948586e-s.p.479bea2b.woff2"
-    ],
     "[project]/app/chats/page": [
       "static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
       "static/media/797e433ab948586e-s.p.479bea2b.woff2"
@@ -12,11 +8,11 @@
       "static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
       "static/media/797e433ab948586e-s.p.479bea2b.woff2"
     ],
-    "[project]/app/login/page": [
+    "[project]/app/profile/page": [
       "static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
       "static/media/797e433ab948586e-s.p.479bea2b.woff2"
     ],
-    "[project]/app/page": [
+    "[project]/app/search/page": [
       "static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
       "static/media/797e433ab948586e-s.p.479bea2b.woff2"
     ]

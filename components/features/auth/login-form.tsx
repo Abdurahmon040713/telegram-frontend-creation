@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AlertMessage } from "@/components/alert-message"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { authApi, ApiError } from "@/lib/api"
 
 type Step = "credentials" | "verification" | "twofa"
@@ -141,7 +142,11 @@ export function LoginForm() {
   const stepIndex = STEPS.indexOf(step)
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-background relative">
+      {/* Theme toggle — yuqori o'ng burchakda */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
 
         {/* ── Brand ─────────────────────────────────────────────────────────── */}

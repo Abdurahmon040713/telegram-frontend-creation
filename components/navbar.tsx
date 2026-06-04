@@ -6,6 +6,7 @@ import { MessageSquare, User, Home, LogOut, Menu, Search, X } from "lucide-react
 import { useAuth } from "@/hooks/use-auth"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Navbar() {
   const pathname = usePathname()
@@ -58,13 +59,16 @@ export function Navbar() {
                 </Link>
               )
             })}
-            <button
-              onClick={handleLogout}
-              className="ml-2 flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              Chiqish
-            </button>
+            <div className="ml-1 flex items-center gap-1 border-l border-border/40 pl-2">
+              <ThemeToggle />
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                Chiqish
+              </button>
+            </div>
           </div>
 
           <button
@@ -97,6 +101,10 @@ export function Navbar() {
                 </Link>
               )
             })}
+            <div className="flex items-center justify-between rounded-lg px-4 py-3 border-t border-border/40 mt-1">
+              <span className="text-sm text-muted-foreground">Rejim</span>
+              <ThemeToggle />
+            </div>
             <button
               onClick={handleLogout}
               className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"

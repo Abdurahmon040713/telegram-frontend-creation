@@ -293,6 +293,8 @@ export interface User {
 
 export interface ViolationRecord {
   user_id:    number
+  first_name: string | null
+  username:   string | null
   warn_count: number
   is_muted:   boolean
   is_banned:  boolean
