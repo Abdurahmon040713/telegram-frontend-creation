@@ -23,6 +23,7 @@ import {
   CommandInput, CommandItem, CommandList,
 } from "@/components/ui/command"
 import { AlertMessage } from "@/components/alert-message"
+import { formatUserLabel } from "@/lib/format-user-label"
 import { cn }           from "@/lib/utils"
 import { ApiError, type Chat } from "@/lib/api"
 import { useApiError }  from "@/lib/hooks/useApiError"
@@ -35,17 +36,18 @@ type DetectReason = 'keyword_match' | 'context_weight' | 'ai_sentiment' | null
 type DatePreset  = 'today' | 'yesterday' | 'last3days' | 'custom'
 
 interface SearchResult {
-  id:          number
-  chat_id:     number
-  text:        string
-  is_negative: boolean
-  reason:      DetectReason
-  confidence:  number
-  sender_id:   number | null
-  analyzed_at: string | null
-  user_status: UserStatus
-  warn_count:  number | null
-  muted_until: string | null
+  id:              number
+  chat_id:         number
+  text:            string
+  is_negative:     boolean
+  reason:          DetectReason
+  confidence:      number
+  sender_id:       number | null
+  sender_username?: string | null
+  analyzed_at:     string | null
+  user_status:     UserStatus
+  warn_count:      number | null
+  muted_until:     string | null
 }
 
 interface SearchResponse {
@@ -600,10 +602,12 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
                         <span className="font-medium text-foreground">
                           {chats.find(c => c.id === item.chat_id)?.title ?? `Chat ${item.chat_id}`}
                         </span>
-                        {item.sender_id && (
+                        {formatUserLabel(item.sender_id, item.sender_username) && (
                           <>
                             <span className="opacity-40">·</span>
-                            <span className="font-mono">User #{item.sender_id}</span>
+                            <span className="font-mono">
+                              {formatUserLabel(item.sender_id, item.sender_username)}
+                            </span>
                           </>
                         )}
                       </div>

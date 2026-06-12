@@ -20,6 +20,7 @@ import {
   chatsApi, ApiError, moderationApi,
   type Chat, type AnalyzeResponse, type ViolationRecord, type MutePreset,
 } from "@/lib/api"
+import { formatUserLabel } from "@/lib/format-user-label"
 import { cn }            from "@/lib/utils"
 import { useApiError }   from "@/lib/hooks/useApiError"
 import { BlacklistPanel } from "@/components/features/chats/blacklist-panel"
@@ -708,8 +709,13 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                               <div className="flex items-start gap-2">
                                 <AlertTriangle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
                                 <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 mb-1.5">
+                                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                                     <ReasonBadge reason={msg.reason} variant="short" />
+                                    {formatUserLabel(msg.sender_id, msg.sender_username) && (
+                                      <span className="text-[10px] text-muted-foreground font-mono">
+                                        {formatUserLabel(msg.sender_id, msg.sender_username)}
+                                      </span>
+                                    )}
                                   </div>
                                   <p className="text-sm text-foreground whitespace-pre-wrap break-words">
                                     {msg.text}

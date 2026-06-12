@@ -27,6 +27,7 @@ import {
   filterMessagesByReason,
   type ReasonFilterValue,
 } from "@/components/features/chats/analysis-filters"
+import { formatUserLabel } from "@/lib/format-user-label"
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -189,14 +190,18 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
     : []
 
   // Top offenders grouped by sender_id
-  const offenderMap = new Map<number, number>()
+  const offenderMap = new Map<number, { count: number; username?: string | null }>()
   analysisResult?.negative_messages.forEach(msg => {
     if (msg.sender_id) {
-      offenderMap.set(msg.sender_id, (offenderMap.get(msg.sender_id) ?? 0) + 1)
+      const prev = offenderMap.get(msg.sender_id)
+      offenderMap.set(msg.sender_id, {
+        count: (prev?.count ?? 0) + 1,
+        username: msg.sender_username ?? prev?.username,
+      })
     }
   })
   const topOffenders = [...offenderMap.entries()]
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => b[1].count - a[1].count)
     .slice(0, 5)
 
   const negPct = analysisResult && analysisResult.analyzed_count > 0
@@ -426,14 +431,16 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                       Eng faol qoidabuzarlar
                     </p>
                     <div className="space-y-2">
-                      {topOffenders.map(([userId, count], idx) => {
-                        const pct = Math.round((count / analysisResult.negative_count) * 100)
+                      {topOffenders.map(([userId, entry], idx) => {
+                        const pct = Math.round((entry.count / analysisResult.negative_count) * 100)
                         return (
                           <div key={userId} className="flex items-center gap-3">
                             <span className="text-xs text-muted-foreground w-4 tabular-nums">
                               {idx + 1}.
                             </span>
-                            <span className="text-sm font-mono flex-1">User #{userId}</span>
+                            <span className="text-sm font-mono flex-1">
+                              {formatUserLabel(userId, entry.username)}
+                            </span>
                             <div className="flex items-center gap-2">
                               <div className="h-1.5 rounded-full bg-red-500/20 w-20 overflow-hidden">
                                 <div
@@ -442,7 +449,7 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                                 />
                               </div>
                               <span className="text-xs text-muted-foreground tabular-nums w-10 text-right">
-                                {count} ta
+                                {entry.count} ta
                               </span>
                             </div>
                           </div>
@@ -486,9 +493,9 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
                                       <ReasonBadge reason={msg.reason} variant="short" />
-                                      {msg.sender_id && (
+                                      {formatUserLabel(msg.sender_id, msg.sender_username) && (
                                         <span className="text-[10px] text-muted-foreground font-mono">
-                                          User #{msg.sender_id}
+                                          {formatUserLabel(msg.sender_id, msg.sender_username)}
                                         </span>
                                       )}
                                     </div>

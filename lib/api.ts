@@ -279,6 +279,7 @@ export interface NegativeMessage {
   text: string
   confidence: number
   sender_id: number | null
+  sender_username?: string | null
   reason: MessageReason
 }
 
