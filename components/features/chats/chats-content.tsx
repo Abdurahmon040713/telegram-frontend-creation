@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   AlertTriangle, Ban, BarChart3, ChevronDown,
   Clock, Loader2, MessageSquare, Radio,
@@ -23,6 +23,13 @@ import {
 import { cn }            from "@/lib/utils"
 import { useApiError }   from "@/lib/hooks/useApiError"
 import { BlacklistPanel } from "@/components/features/chats/blacklist-panel"
+import {
+  AnalysisReasonFilterChips,
+  ReasonBadge,
+  formatConfidencePercent,
+  filterMessagesByReason,
+  type ReasonFilterValue,
+} from "@/components/features/chats/analysis-filters"
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -78,6 +85,7 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
   const [analysisResult, setAnalysisResult] = useState<AnalyzeResponse | null>(null)
   const [limit, setLimit]                   = useState(50)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
+  const [analysisReasonFilter, setAnalysisReasonFilter] = useState<ReasonFilterValue>("all")
 
   // Monitor
   const [monitoredChats, setMonitoredChats]         = useState<Set<number>>(new Set())
@@ -89,6 +97,12 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
     action: ViolationAction
   } | null>(null)
   const [mutePresets, setMutePresets] = useState<MutePreset[]>(FALLBACK_MUTE_PRESETS)
+
+  // Tahlil natijalarini reason bo'yicha client-side filtrlash
+  const filteredNegative = useMemo(() => {
+    if (!analysisResult) return []
+    return filterMessagesByReason(analysisResult.negative_messages, analysisReasonFilter)
+  }, [analysisResult, analysisReasonFilter])
 
   // Refs
   const abortRef = useRef<AbortController | null>(null)
@@ -156,6 +170,7 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
     setRightPanel('analysis')
     setError(null)
     setAnalysisResult(null)
+    setAnalysisReasonFilter("all")
     startElapsedTimer()
 
     try {
@@ -678,47 +693,42 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                   </div>
 
                   {analysisResult.negative_messages.length > 0 ? (
-                    <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
-                      <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        Negativ xabarlar
-                      </h3>
-                      {analysisResult.negative_messages.map(msg => (
-                        <div key={msg.id} className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
-                          <div className="flex items-start gap-2">
-                            <AlertTriangle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1.5">
-                                {msg.reason === 'keyword_match' && (
-                                  <Badge variant="secondary"
-                                    className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]">
-                                    Lug&apos;at (L1)
-                                  </Badge>
-                                )}
-                                {msg.reason === 'context_weight' && (
-                                  <Badge variant="secondary"
-                                    className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px]">
-                                    Kontekst (L2)
-                                  </Badge>
-                                )}
-                                {msg.reason === 'ai_sentiment' && (
-                                  <Badge variant="secondary"
-                                    className="bg-purple-500/10 text-purple-600 border-purple-500/20 text-[10px]">
-                                    AI (L3)
-                                  </Badge>
-                                )}
+                    <div className="space-y-3">
+                      <AnalysisReasonFilterChips
+                        value={analysisReasonFilter}
+                        onChange={setAnalysisReasonFilter}
+                      />
+                      {filteredNegative.length > 0 ? (
+                        <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+                          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                            Negativ xabarlar ({filteredNegative.length})
+                          </h3>
+                          {filteredNegative.map(msg => (
+                            <div key={msg.id} className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
+                              <div className="flex items-start gap-2">
+                                <AlertTriangle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 mb-1.5">
+                                    <ReasonBadge reason={msg.reason} variant="short" />
+                                  </div>
+                                  <p className="text-sm text-foreground whitespace-pre-wrap break-words">
+                                    {msg.text}
+                                  </p>
+                                  {formatConfidencePercent(msg.confidence) && (
+                                    <p className="mt-1 text-xs text-muted-foreground">
+                                      {formatConfidencePercent(msg.confidence)}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
-                              <p className="text-sm text-foreground whitespace-pre-wrap break-words">
-                                {msg.text}
-                              </p>
-                              {msg.reason === 'ai_sentiment' && (
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                  Ishonch: {(msg.confidence * 100).toFixed(1)}%
-                                </p>
-                              )}
                             </div>
-                          </div>
+                          ))}
                         </div>
-                      ))}
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                          Tanlangan filtr bo&apos;yicha xabar topilmadi
+                        </p>
+                      )}
                     </div>
                   ) : (
                     <div className="text-center py-6">
@@ -846,15 +856,12 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                           >
                             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                               <div className="min-w-0 flex-1">
-                                <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                                <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
                                   <span className="text-sm font-medium text-foreground">
-                                    {v.first_name || (v.username ? `@${v.username}` : `ID ${v.user_id}`)}
+                                    {v.first_name || (v.username ? `@${v.username}` : "Noma'lum foydalanuvchi")}
                                   </span>
                                   {v.username && v.first_name && (
                                     <span className="text-[11px] text-muted-foreground">@{v.username}</span>
-                                  )}
-                                  {!v.first_name && !v.username && (
-                                    <span className="text-[11px] text-muted-foreground font-mono">#{v.user_id}</span>
                                   )}
                                   {v.is_banned && (
                                     <Badge className="bg-red-500/10 text-red-500 border-red-500/20 text-[10px] h-5">
@@ -868,6 +875,9 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                                     </Badge>
                                   )}
                                 </div>
+                                <p className="text-xs text-muted-foreground font-mono mb-1">
+                                  ID: {v.user_id}
+                                </p>
                                 <p className="text-xs text-muted-foreground">
                                   Ogohlantirish:{" "}
                                   <span className="font-medium text-foreground">{v.warn_count}</span>
@@ -877,6 +887,16 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                                     </span>
                                   )}
                                 </p>
+                                {(v.last_reason || v.last_confidence) && (
+                                  <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                                    <ReasonBadge reason={v.last_reason} />
+                                    {formatConfidencePercent(v.last_confidence) && (
+                                      <span className="text-[11px] text-muted-foreground">
+                                        {formatConfidencePercent(v.last_confidence)}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                               <div className="flex flex-col gap-1.5 shrink-0 sm:items-end">
                                 {/* Jimlantirish (mute) — jimlantirilMAgan va banlanMAgan uchun */}

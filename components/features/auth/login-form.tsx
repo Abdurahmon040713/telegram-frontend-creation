@@ -20,7 +20,18 @@ const STEP_LABELS: Record<Step, string> = {
 
 const STEPS: Step[] = ["credentials", "verification", "twofa"]
 
-export function LoginForm() {
+function resolveRedirectPath(redirectTo?: string): string {
+  if (redirectTo?.startsWith('/') && !redirectTo.startsWith('/login')) {
+    return redirectTo
+  }
+  return '/dashboard'
+}
+
+type LoginFormProps = {
+  redirectTo?: string
+}
+
+export function LoginForm({ redirectTo }: LoginFormProps) {
   const [step, setStep]           = useState<Step>("credentials")
   const [loading, setLoading]     = useState(false)
   const [error, setError]         = useState<string | null>(null)
@@ -62,8 +73,6 @@ export function LoginForm() {
         setPhoneCodeHash(res.phone_code_hash || "")
         setStep("verification")
         setSuccess("Tasdiqlash kodi yuborildi!")
-      } else if (res?.status === "authorized") {
-        window.location.href = '/dashboard'
       } else {
         throw new Error(`Noto'g'ri javob: ${res?.status}`)
       }
@@ -82,6 +91,7 @@ export function LoginForm() {
     try {
       const res = await fetch('/api/auth/verify', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone,
@@ -98,7 +108,7 @@ export function LoginForm() {
         setSuccess("Ikki bosqichli himoya parolini kiriting")
       } else if (data.status === "success") {
         setSuccess("Muvaffaqiyatli kirildi!")
-        window.location.href = '/dashboard'
+        window.location.href = resolveRedirectPath(redirectTo)
       } else if (!res.ok) {
         throw new Error(data.detail || `HTTP ${res.status}`)
       } else {
@@ -119,6 +129,7 @@ export function LoginForm() {
     try {
       const res = await fetch('/api/auth/verify-2fa', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone, password: twoFaPass }),
       })
@@ -126,7 +137,7 @@ export function LoginForm() {
 
       if (data.status === "success") {
         setSuccess("Muvaffaqiyatli kirildi!")
-        window.location.href = '/dashboard'
+        window.location.href = resolveRedirectPath(redirectTo)
       } else if (!res.ok) {
         throw new Error(data.detail || `HTTP ${res.status}`)
       } else {

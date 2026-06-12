@@ -449,8 +449,13 @@ export function MonitorContent({ initialChats, initialPhone }: MonitorContentPro
                           >
                             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                               <div className="min-w-0 flex-1">
-                                <div className="flex flex-wrap items-center gap-1.5 mb-1">
-                                  <span className="text-sm font-mono">User #{v.user_id}</span>
+                                <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
+                                  <span className="text-sm font-medium text-foreground">
+                                    {v.first_name || (v.username ? `@${v.username}` : "Noma'lum foydalanuvchi")}
+                                  </span>
+                                  {v.username && v.first_name && (
+                                    <span className="text-[11px] text-muted-foreground">@{v.username}</span>
+                                  )}
                                   {v.is_banned && (
                                     <Badge className="bg-red-500/10 text-red-500 border-red-500/20 text-[10px] h-5">
                                       <Ban className="h-3 w-3 mr-0.5" />Bloklangan
@@ -462,6 +467,9 @@ export function MonitorContent({ initialChats, initialPhone }: MonitorContentPro
                                     </Badge>
                                   )}
                                 </div>
+                                <p className="text-xs text-muted-foreground font-mono mb-1">
+                                  ID: {v.user_id}
+                                </p>
                                 <p className="text-xs text-muted-foreground">
                                   Ogohlantirish:{" "}
                                   <span className="font-semibold text-foreground">{v.warn_count}</span>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { setTokenCookie } from '@/lib/auth-cookies'
 import { BACKEND_URL } from '@/lib/backend-url'
-const COOKIE_MAX_AGE = 24 * 60 * 60
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,13 +33,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json(data)
 
     if (token) {
-      response.cookies.set('telegram_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: COOKIE_MAX_AGE,
-        path: '/',
-      })
+      setTokenCookie(response, token)
     }
 
     return response

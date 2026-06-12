@@ -1,13 +1,7 @@
 {
   "/api/chats/banned/route": "app/api/chats/banned/route.js",
   "/api/chats/mute-presets/route": "app/api/chats/mute-presets/route.js",
-  "/api/chats/route": "app/api/chats/route.js",
-  "/api/monitor/start/route": "app/api/monitor/start/route.js",
   "/api/monitor/status/route": "app/api/monitor/status/route.js",
-  "/api/search/route": "app/api/search/route.js",
   "/api/violations/[chatId]/route": "app/api/violations/[chatId]/route.js",
-  "/chats/page": "app/chats/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/profile/page": "app/profile/page.js",
-  "/search/page": "app/search/page.js"
+  "/chats/page": "app/chats/page.js"
 }

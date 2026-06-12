@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server'
 
+import { clearAuthCookies } from '@/lib/auth-cookies'
+
 /**
  * POST /api/auth/logout
  * Auth cookie'larni o'chirish.
- *
- * MUHIM: cookies() Server Action'i Route Handler'dan chaqirilganda
- * Set-Cookie header NextResponse'ga qo'shilmaydi. Shuning uchun
- * cookie'lar to'g'ridan-to'g'ri NextResponse.cookies.delete() orqali o'chiriladi.
  */
 export async function POST() {
   try {
@@ -14,8 +12,7 @@ export async function POST() {
       { status: 'success', message: 'Logout muvaffaqiyatli bajarildi' }
     )
 
-    response.cookies.delete('telegram_token')
-    response.cookies.delete('telegram_phone')
+    clearAuthCookies(response)
 
     return response
   } catch (error) {

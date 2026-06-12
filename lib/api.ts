@@ -265,6 +265,9 @@ export const moderationApi = {
 }
 
 // Types
+/** Kaskad aniqlash sababi: L1 kalit so'z, L2 kontekst, L3 AI sentiment */
+export type MessageReason = 'keyword_match' | 'context_weight' | 'ai_sentiment'
+
 export interface Chat {
   id: number
   title: string
@@ -276,7 +279,7 @@ export interface NegativeMessage {
   text: string
   confidence: number
   sender_id: number | null
-  reason: 'keyword_match' | 'context_weight' | 'ai_sentiment'
+  reason: MessageReason
 }
 
 export interface AnalyzeResponse {
@@ -299,6 +302,8 @@ export interface ViolationRecord {
   is_muted:   boolean
   is_banned:  boolean
   muted_until: string | null
+  last_reason?: MessageReason | null
+  last_confidence?: number | null
 }
 
 export interface BannedUser {

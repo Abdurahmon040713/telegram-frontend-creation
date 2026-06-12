@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import {
   AlertTriangle, BarChart3, ChevronDown, Clock,
   Loader2, MessageSquare, Radio, Search, Users,
@@ -11,7 +11,6 @@ import {
 } from "recharts"
 import { Button }        from "@/components/ui/button"
 import { Input }         from "@/components/ui/input"
-import { Badge }         from "@/components/ui/badge"
 import {
   DropdownMenu, DropdownMenuContent,
   DropdownMenuRadioGroup, DropdownMenuRadioItem,
@@ -21,6 +20,13 @@ import { AlertMessage }  from "@/components/alert-message"
 import { chatsApi, ApiError, type Chat, type AnalyzeResponse } from "@/lib/api"
 import { cn }            from "@/lib/utils"
 import { useApiError }   from "@/lib/hooks/useApiError"
+import {
+  AnalysisReasonFilterChips,
+  ReasonBadge,
+  formatConfidencePercent,
+  filterMessagesByReason,
+  type ReasonFilterValue,
+} from "@/components/features/chats/analysis-filters"
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -72,6 +78,12 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
   const [analysisResult, setAnalysisResult] = useState<AnalyzeResponse | null>(null)
   const [limit, setLimit]                   = useState(50)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
+  const [analysisReasonFilter, setAnalysisReasonFilter] = useState<ReasonFilterValue>("all")
+
+  const filteredNegative = useMemo(() => {
+    if (!analysisResult) return []
+    return filterMessagesByReason(analysisResult.negative_messages, analysisReasonFilter)
+  }, [analysisResult, analysisReasonFilter])
 
   const abortRef = useRef<AbortController | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -97,6 +109,7 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
     setSelectedChat(chat)
     setError(null)
     setAnalysisResult(null)
+    setAnalysisReasonFilter("all")
     startTimer()
 
     try {
@@ -452,56 +465,52 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                     </div>
                   ) : (
                     <div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                        Negativ xabarlar ro&apos;yxati ({analysisResult.negative_messages.length})
-                      </p>
-                      <div className="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
-                        {analysisResult.negative_messages.map(msg => (
-                          <div
-                            key={msg.id}
-                            className="rounded-lg border border-red-500/20 bg-red-500/5 p-3"
-                          >
-                            <div className="flex items-start gap-2">
-                              <AlertTriangle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-                                  {msg.reason === 'keyword_match' && (
-                                    <Badge variant="secondary"
-                                      className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]">
-                                      Lug&apos;at (L1)
-                                    </Badge>
-                                  )}
-                                  {msg.reason === 'context_weight' && (
-                                    <Badge variant="secondary"
-                                      className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px]">
-                                      Kontekst (L2)
-                                    </Badge>
-                                  )}
-                                  {msg.reason === 'ai_sentiment' && (
-                                    <Badge variant="secondary"
-                                      className="bg-violet-500/10 text-violet-600 border-violet-500/20 text-[10px]">
-                                      AI (L3)
-                                    </Badge>
-                                  )}
-                                  {msg.sender_id && (
-                                    <span className="text-[10px] text-muted-foreground font-mono">
-                                      User #{msg.sender_id}
-                                    </span>
-                                  )}
+                      <AnalysisReasonFilterChips
+                        value={analysisReasonFilter}
+                        onChange={setAnalysisReasonFilter}
+                        className="mb-3"
+                      />
+                      {filteredNegative.length > 0 ? (
+                        <>
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+                            Negativ xabarlar ro&apos;yxati ({filteredNegative.length})
+                          </p>
+                          <div className="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
+                            {filteredNegative.map(msg => (
+                              <div
+                                key={msg.id}
+                                className="rounded-lg border border-red-500/20 bg-red-500/5 p-3"
+                              >
+                                <div className="flex items-start gap-2">
+                                  <AlertTriangle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                                      <ReasonBadge reason={msg.reason} variant="short" />
+                                      {msg.sender_id && (
+                                        <span className="text-[10px] text-muted-foreground font-mono">
+                                          User #{msg.sender_id}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <p className="text-sm text-foreground whitespace-pre-wrap break-words leading-snug">
+                                      {msg.text}
+                                    </p>
+                                    {formatConfidencePercent(msg.confidence) && (
+                                      <p className="mt-1 text-[11px] text-muted-foreground">
+                                        {formatConfidencePercent(msg.confidence)}
+                                      </p>
+                                    )}
+                                  </div>
                                 </div>
-                                <p className="text-sm text-foreground whitespace-pre-wrap break-words leading-snug">
-                                  {msg.text}
-                                </p>
-                                {msg.reason === 'ai_sentiment' && msg.confidence > 0 && (
-                                  <p className="mt-1 text-[11px] text-muted-foreground">
-                                    Ishonch darajasi: {(msg.confidence * 100).toFixed(1)}%
-                                  </p>
-                                )}
                               </div>
-                            </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        </>
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                          Tanlangan filtr bo&apos;yicha xabar topilmadi
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>

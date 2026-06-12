@@ -2,22 +2,26 @@
 
 import { cookies } from 'next/headers'
 
-const TOKEN_NAME = 'telegram_token'
-const PHONE_NAME = 'telegram_phone'
-const MAX_AGE = 7 * 24 * 60 * 60 // 7 days
+import {
+  getCookieSecure,
+  PHONE_COOKIE,
+  PHONE_MAX_AGE,
+  TOKEN_COOKIE,
+  TOKEN_MAX_AGE,
+} from '@/lib/auth-cookies'
+import { getSessionFromCookies } from '@/lib/session'
 
 /**
  * Tokenni HttpOnly cookie'ga yozish
- * @param token - Saqlash uchun token
  */
 export async function setAuthToken(token: string): Promise<void> {
   try {
     const cookieStore = await cookies()
-    cookieStore.set(TOKEN_NAME, token, {
-      httpOnly: true,        // JavaScript orqali o'chib bo'lmaydi (XSS protection)
-      secure: process.env.NODE_ENV === 'production', // HTTPS orqali faqat
-      sameSite: 'lax',       // CSRF protection
-      maxAge: MAX_AGE,       // 7 kun
+    cookieStore.set(TOKEN_COOKIE, token, {
+      httpOnly: true,
+      secure: getCookieSecure(),
+      sameSite: 'lax',
+      maxAge: TOKEN_MAX_AGE,
       path: '/',
     })
   } catch (error) {
@@ -28,12 +32,11 @@ export async function setAuthToken(token: string): Promise<void> {
 
 /**
  * Tokenni cookie'dan o'qish (server-side faqat)
- * @returns Token yoki null agar bo'lmasa
  */
 export async function getAuthToken(): Promise<string | null> {
   try {
     const cookieStore = await cookies()
-    const token = cookieStore.get(TOKEN_NAME)?.value
+    const token = cookieStore.get(TOKEN_COOKIE)?.value
     return token || null
   } catch (error) {
     console.error('Failed to get auth token:', error)
@@ -43,16 +46,15 @@ export async function getAuthToken(): Promise<string | null> {
 
 /**
  * Telefonni cookie'ga yozish
- * @param phone - Saqlash uchun telefon raqami
  */
 export async function setPhoneNumber(phone: string): Promise<void> {
   try {
     const cookieStore = await cookies()
-    cookieStore.set(PHONE_NAME, phone, {
-      httpOnly: true,        // Server action orqali o'qiladi — JS access kerak emas
-      secure: process.env.NODE_ENV === 'production',
+    cookieStore.set(PHONE_COOKIE, phone, {
+      httpOnly: true,
+      secure: getCookieSecure(),
       sameSite: 'lax',
-      maxAge: MAX_AGE,
+      maxAge: PHONE_MAX_AGE,
       path: '/',
     })
   } catch (error) {
@@ -63,12 +65,11 @@ export async function setPhoneNumber(phone: string): Promise<void> {
 
 /**
  * Telefonni cookie'dan o'qish
- * @returns Telefon raqami yoki null
  */
 export async function getPhoneNumber(): Promise<string | null> {
   try {
     const cookieStore = await cookies()
-    const phone = cookieStore.get(PHONE_NAME)?.value
+    const phone = cookieStore.get(PHONE_COOKIE)?.value
     return phone || null
   } catch (error) {
     console.error('Failed to get phone number:', error)
@@ -82,8 +83,8 @@ export async function getPhoneNumber(): Promise<string | null> {
 export async function clearAuthCookies(): Promise<void> {
   try {
     const cookieStore = await cookies()
-    cookieStore.delete(TOKEN_NAME)
-    cookieStore.delete(PHONE_NAME)
+    cookieStore.delete(TOKEN_COOKIE)
+    cookieStore.delete(PHONE_COOKIE)
   } catch (error) {
     console.error('Failed to clear auth cookies:', error)
     throw new Error('Failed to logout')
@@ -92,9 +93,9 @@ export async function clearAuthCookies(): Promise<void> {
 
 /**
  * Foydalanuvchi authentifikatsiyalangan yoki yo'qligini tekshirish
- * @returns true agar token mavjud bo'lsa
  */
 export async function isAuthenticated(): Promise<boolean> {
-  const token = await getAuthToken()
-  return !!token
+  const cookieStore = await cookies()
+  const session = await getSessionFromCookies(cookieStore)
+  return session !== null
 }

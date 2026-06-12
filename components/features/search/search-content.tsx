@@ -26,6 +26,7 @@ import { AlertMessage } from "@/components/alert-message"
 import { cn }           from "@/lib/utils"
 import { ApiError, type Chat } from "@/lib/api"
 import { useApiError }  from "@/lib/hooks/useApiError"
+import { ReasonBadge, formatConfidencePercent } from "@/components/features/chats/analysis-filters"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -69,6 +70,16 @@ const DATE_PRESETS: { value: DatePreset; label: string }[] = [
 const CHAT_TYPE_LABELS: Record<string, string> = {
   Group: "Guruh", Channel: "Kanal", Private: "Shaxsiy",
 }
+
+type SearchReasonFilter = 'all' | 'keyword_match' | 'context_weight' | 'ai_sentiment'
+
+/** Audit log uchun qoidabuzarlik turi filtri */
+const SEARCH_REASON_OPTIONS: { value: SearchReasonFilter; label: string }[] = [
+  { value: 'all',            label: 'Barchasi' },
+  { value: 'keyword_match',  label: "Kalit so'z bo'yicha" },
+  { value: 'context_weight', label: 'Kontekst og\'irligi' },
+  { value: 'ai_sentiment',   label: "Sun'iy intellekt" },
+]
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
@@ -155,6 +166,7 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
   const [chatsLoading, setChatsLoading]     = useState(false)
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null)
   const [comboOpen, setComboOpen]           = useState(false)
+  const [reasonFilter, setReasonFilter]     = useState<SearchReasonFilter>('all')
 
   // Report state
   const [sendingReport, setSendingReport]   = useState(false)
@@ -193,6 +205,7 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
         negative_only: Boolean(negativeOnly),
       }
       if (selectedChatId !== null) body.chat_id = selectedChatId
+      if (reasonFilter !== 'all') body.reason = reasonFilter
 
       const res = await fetch('/api/search', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -408,6 +421,38 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
               </PopoverContent>
             </Popover>
 
+            {/* Qoidabuzarlik turi — server-side filtr */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-10 min-w-[160px] justify-between px-3 text-sm font-normal shrink-0"
+                >
+                  <span className="truncate">
+                    {SEARCH_REASON_OPTIONS.find(o => o.value === reasonFilter)?.label ?? 'Barchasi'}
+                  </span>
+                  <ChevronDown className="ml-2 h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-[200px]">
+                <DropdownMenuRadioGroup
+                  value={reasonFilter ?? 'all'}
+                  onValueChange={v => setReasonFilter(v as SearchReasonFilter)}
+                >
+                  {SEARCH_REASON_OPTIONS.map(opt => (
+                    <DropdownMenuRadioItem
+                      key={opt.value}
+                      value={opt.value}
+                      className="text-sm cursor-pointer"
+                    >
+                      {opt.label}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {/* Faqat o'chirilganlar switch — NO onClick on wrapper */}
             <div className="flex items-center gap-2 h-10 px-3 rounded-lg border border-border/40
                             bg-background shrink-0">
@@ -575,27 +620,10 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
 
                     {/* Footer: detection method + confidence + mute-until */}
                     <div className="flex items-center gap-2 mt-2.5 flex-wrap">
-                      {item.reason === 'keyword_match' && (
-                        <Badge variant="secondary"
-                          className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[10px]">
-                          Lug&apos;at (L1)
-                        </Badge>
-                      )}
-                      {item.reason === 'context_weight' && (
-                        <Badge variant="secondary"
-                          className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px]">
-                          Kontekst (L2)
-                        </Badge>
-                      )}
-                      {item.reason === 'ai_sentiment' && (
-                        <Badge variant="secondary"
-                          className="bg-violet-500/10 text-violet-600 border-violet-500/20 text-[10px]">
-                          AI (L3)
-                        </Badge>
-                      )}
-                      {item.reason === 'ai_sentiment' && item.confidence > 0 && (
+                      <ReasonBadge reason={item.reason} variant="short" />
+                      {formatConfidencePercent(item.confidence) && (
                         <span className="text-xs text-muted-foreground">
-                          Ishonch: {(item.confidence * 100).toFixed(1)}%
+                          {formatConfidencePercent(item.confidence)}
                         </span>
                       )}
                       {item.user_status === 'muted' && item.muted_until && (

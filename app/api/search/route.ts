@@ -12,6 +12,7 @@ const searchSchema = z.object({
   end_date:      z.string().regex(DATE_RE).optional(),
   chat_id:       z.number().int().optional(),
   negative_only: z.boolean().default(true),
+  reason: z.enum(['keyword_match', 'context_weight', 'ai_sentiment']).optional(),
 })
 
 export async function POST(request: NextRequest) {

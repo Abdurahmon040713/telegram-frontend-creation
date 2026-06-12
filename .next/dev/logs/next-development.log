@@ -1,15 +1,5 @@
-[00:00:04.866] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-[00:00:05.410] Server  LOG      ✓ Ready in 4.2s
-[00:00:13.982] Server  LOG      ○ Compiling /search ...
-[00:00:21.307] Server  WARN     ⚠ Cross origin request detected from 10.104.174.33 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
-Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
-[00:00:21.426] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:21.741] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
-[00:00:27.093] Server  LOG      ○ Compiling /dashboard ...
-[00:39:09.387] Server  LOG      ○ Compiling /chats ...
-[00:40:30.002] Server  ERROR   Error: aborted
-[00:40:30.006] Server  ERROR    ⨯ "uncaughtException:" Error: aborted
-[00:40:30.010] Server  ERROR    ⨯ "uncaughtException: " Error: aborted
-[00:40:37.692] Server  ERROR   Error: aborted
-[00:40:37.701] Server  ERROR    ⨯ "uncaughtException:" Error: aborted
-[00:40:37.703] Server  ERROR    ⨯ "uncaughtException: " Error: aborted
+[00:00:04.716] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:05.643] Server  LOG      ✓ Ready in 4.6s
+[00:00:11.028] Server  LOG      ○ Compiling /chats ...
+[00:00:18.931] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:19.057] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.

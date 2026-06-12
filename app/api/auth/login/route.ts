@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { setPhoneCookie } from '@/lib/auth-cookies'
 import { BACKEND_URL } from '@/lib/backend-url'
-
-const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 // 7 kun
 
 /**
  * POST /api/auth/login
  * Login so'rovini backend'ga yuborish va telefon raqamini cookie'ga saqlash.
- *
- * MUHIM: cookies() Server Action'i Route Handler'dan chaqirilganda
- * Set-Cookie header NextResponse'ga qo'shilmaydi. Shuning uchun
- * cookie to'g'ridan-to'g'ri NextResponse.cookies.set() orqali o'rnatiladi.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -39,17 +34,8 @@ export async function POST(request: NextRequest) {
     const data = await backendResponse.json()
     const response = NextResponse.json(data)
 
-    // Strip spaces/dashes so Zod regex in /api/analyze always passes
     const normalizedPhone = phone.trim().replace(/[\s\-\(\)]/g, '')
-
-    // httpOnly: phone is read server-side via getPhoneNumber() server action only.
-    response.cookies.set('telegram_phone', normalizedPhone, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: COOKIE_MAX_AGE,
-      path: '/',
-    })
+    setPhoneCookie(response, normalizedPhone)
 
     return response
   } catch (error) {

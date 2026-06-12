@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { setTokenCookie } from '@/lib/auth-cookies'
 import { BACKEND_URL } from '@/lib/backend-url'
-
-const COOKIE_MAX_AGE = 24 * 60 * 60 // 24 soat — JWT muddat bilan mos
 
 /**
  * POST /api/auth/verify
  * Telefon kodi orqali verify qilish va tokenni cookie'ga saqlash.
- *
- * MUHIM: cookies() Server Action'i Route Handler'dan chaqirilganda
- * Set-Cookie header NextResponse'ga qo'shilmaydi. Shuning uchun
- * token to'g'ridan-to'g'ri NextResponse.cookies.set() orqali o'rnatiladi.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -42,14 +37,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json(data)
 
     if (token) {
-      // NextResponse.cookies.set() — Set-Cookie header to'g'ridan-to'g'ri response'ga yoziladi
-      response.cookies.set('telegram_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: COOKIE_MAX_AGE,
-        path: '/',
-      })
+      setTokenCookie(response, token)
     }
 
     return response
