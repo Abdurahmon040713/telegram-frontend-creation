@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { setTokenCookie } from '@/lib/auth-cookies'
+import { normalizePhoneCookie, setPhoneCookie, setTokenCookie } from '@/lib/auth-cookies'
 import { BACKEND_URL } from '@/lib/backend-url'
 
 export async function POST(request: NextRequest) {
@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
 
     if (token) {
       setTokenCookie(response, token)
+      setPhoneCookie(response, normalizePhoneCookie(phone))
     }
 
     return response

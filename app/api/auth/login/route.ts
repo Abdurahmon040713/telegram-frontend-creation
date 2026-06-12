@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { setPhoneCookie } from '@/lib/auth-cookies'
+import { normalizePhoneCookie, setPhoneCookie } from '@/lib/auth-cookies'
 import { BACKEND_URL } from '@/lib/backend-url'
 
 /**
@@ -34,8 +34,7 @@ export async function POST(request: NextRequest) {
     const data = await backendResponse.json()
     const response = NextResponse.json(data)
 
-    const normalizedPhone = phone.trim().replace(/[\s\-\(\)]/g, '')
-    setPhoneCookie(response, normalizedPhone)
+    setPhoneCookie(response, normalizePhoneCookie(phone))
 
     return response
   } catch (error) {

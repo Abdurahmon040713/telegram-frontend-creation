@@ -35,6 +35,11 @@ export function setPhoneCookie(response: NextResponse, phone: string): void {
 }
 
 export function clearAuthCookies(response: NextResponse): void {
-  response.cookies.delete(TOKEN_COOKIE)
-  response.cookies.delete(PHONE_COOKIE)
+  response.cookies.delete({ name: TOKEN_COOKIE, path: '/' })
+  response.cookies.delete({ name: PHONE_COOKIE, path: '/' })
+}
+
+/** Telefon raqamini login/verify uchun normalizatsiya qilish */
+export function normalizePhoneCookie(phone: string): string {
+  return phone.trim().replace(/[\s\-\(\)]/g, '')
 }

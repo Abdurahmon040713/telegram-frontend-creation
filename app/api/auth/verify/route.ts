@@ -1,6 +1,13 @@
+import { appendFileSync } from 'fs'
+import { join } from 'path'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { setTokenCookie } from '@/lib/auth-cookies'
+import {
+  getCookieSecure,
+  normalizePhoneCookie,
+  setPhoneCookie,
+  setTokenCookie,
+} from '@/lib/auth-cookies'
 import { BACKEND_URL } from '@/lib/backend-url'
 
 /**
@@ -38,7 +45,31 @@ export async function POST(request: NextRequest) {
 
     if (token) {
       setTokenCookie(response, token)
+      setPhoneCookie(response, normalizePhoneCookie(phone))
     }
+
+    // #region agent log
+    try {
+      appendFileSync(
+        join(process.cwd(), '..', 'debug-02af9a.log'),
+        JSON.stringify({
+          sessionId: '02af9a',
+          runId: 'post-fix',
+          location: 'verify/route.ts',
+          message: 'cookie set on verify',
+          data: {
+            hasToken: !!token,
+            cookieSecure: getCookieSecure(),
+            jwtSecretSet: !!process.env.JWT_SECRET_KEY,
+            cookieNames: ['telegram_token', 'telegram_phone'],
+          },
+          timestamp: Date.now(),
+          hypothesisId: 'A,C',
+        }) + '\n',
+      )
+    } catch { /* ignore */ }
+    fetch('http://127.0.0.1:7648/ingest/55b2d326-e327-4646-a7ee-400eedec4875',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'02af9a'},body:JSON.stringify({sessionId:'02af9a',runId:'post-fix',location:'verify/route.ts',message:'cookie set on verify',data:{hasToken:!!token,cookieSecure:getCookieSecure(),jwtSecretSet:!!process.env.JWT_SECRET_KEY},timestamp:Date.now(),hypothesisId:'A,C'})}).catch(()=>{});
+    // #endregion
 
     return response
   } catch (error) {

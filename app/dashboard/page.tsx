@@ -15,6 +15,10 @@ export default async function DashboardPage() {
   const token = cookieStore.get('telegram_token')?.value
   const phone = cookieStore.get('telegram_phone')?.value
 
+  // #region agent log
+  fetch('http://127.0.0.1:7648/ingest/55b2d326-e327-4646-a7ee-400eedec4875',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'02af9a'},body:JSON.stringify({sessionId:'02af9a',location:'dashboard/page.tsx',message:'dashboard cookie check',data:{hasToken:!!token,hasPhone:!!phone},timestamp:Date.now(),hypothesisId:'C,D'})}).catch(()=>{});
+  // #endregion
+
   if (!token || !phone) {
     redirect('/login')
   }
