@@ -18,6 +18,7 @@ import {
   chatsApi, ApiError, moderationApi,
   type Chat, type ViolationRecord, type MutePreset,
 } from "@/lib/api"
+import { formatUserLabel } from "@/lib/format-user-label"
 import { cn }           from "@/lib/utils"
 import { useApiError }  from "@/lib/hooks/useApiError"
 
@@ -468,7 +469,7 @@ export function MonitorContent({ initialChats, initialPhone }: MonitorContentPro
                                   )}
                                 </div>
                                 <p className="text-xs text-muted-foreground font-mono mb-1">
-                                  ID: {v.user_id}
+                                  {formatUserLabel(v.user_id, v.username) ?? `User #${v.user_id}`}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                   Ogohlantirish:{" "}

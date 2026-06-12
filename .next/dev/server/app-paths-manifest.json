@@ -1,7 +1,18 @@
 {
+  "/analyze/page": "app/analyze/page.js",
+  "/api/analyze/route": "app/api/analyze/route.js",
+  "/api/analyze/status/[jobId]/route": "app/api/analyze/status/[jobId]/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/auth/verify/route": "app/api/auth/verify/route.js",
+  "/api/chats/[chatId]/reset-warns/[userId]/route": "app/api/chats/[chatId]/reset-warns/[userId]/route.js",
+  "/api/chats/[chatId]/unmute/[userId]/route": "app/api/chats/[chatId]/unmute/[userId]/route.js",
   "/api/chats/banned/route": "app/api/chats/banned/route.js",
   "/api/chats/mute-presets/route": "app/api/chats/mute-presets/route.js",
+  "/api/monitor/start/route": "app/api/monitor/start/route.js",
   "/api/monitor/status/route": "app/api/monitor/status/route.js",
+  "/api/monitor/stop/route": "app/api/monitor/stop/route.js",
   "/api/violations/[chatId]/route": "app/api/violations/[chatId]/route.js",
-  "/chats/page": "app/chats/page.js"
+  "/chats/page": "app/chats/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/login/page": "app/login/page.js"
 }

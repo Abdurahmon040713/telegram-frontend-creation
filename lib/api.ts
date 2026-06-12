@@ -287,6 +287,7 @@ export interface AnalyzeResponse {
   analyzed_count: number
   negative_count: number
   negative_messages: NegativeMessage[]
+  chat_title?: string | null
 }
 
 export interface User {

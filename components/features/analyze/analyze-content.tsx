@@ -27,6 +27,7 @@ import {
   filterMessagesByReason,
   type ReasonFilterValue,
 } from "@/components/features/chats/analysis-filters"
+import { formatChatLabel } from "@/lib/format-chat-label"
 import { formatUserLabel } from "@/lib/format-user-label"
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -212,6 +213,10 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
     c.title.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  const resultChatTitle =
+    analysisResult?.chat_title?.trim() || selectedChat?.title || null
+  const resultChatId = selectedChat?.id ?? null
+
   const getChatIcon = (type: string) => {
     if (type === "Group")   return Users
     if (type === "Channel") return Radio
@@ -311,7 +316,9 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                     {/* Title — no ShieldCheck indicator */}
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-foreground truncate">{chat.title}</p>
-                      <p className="text-xs text-muted-foreground">{chat.type}</p>
+                      <p className="text-xs text-muted-foreground font-mono mt-0.5">
+                        ID: {chat.id} · {chat.type}
+                      </p>
                     </div>
 
                     {/* Tahlil only — no Shield button */}
@@ -341,7 +348,7 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
               <div className="rounded-2xl border border-border/40 bg-card p-8 text-center">
                 <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
                 <h3 className="mt-4 font-medium text-foreground">
-                  {selectedChat.title} tahlil qilinmoqda...
+                  {resultChatTitle ?? `Chat #${selectedChat.id}`} tahlil qilinmoqda...
                 </h3>
                 <div className="mt-3 flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
@@ -364,9 +371,16 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
 
                 {/* ── Stats cards ──────────────────────────────────────── */}
                 <div className="px-5 pt-5 pb-4 border-b border-border/40">
-                  <h2 className="text-sm font-semibold text-foreground mb-3">
-                    {selectedChat.title}
+                  <h2
+                    className={`text-sm font-semibold text-foreground ${resultChatId != null ? "mb-0.5" : "mb-3"}`}
+                  >
+                    {resultChatTitle ?? `Chat #${resultChatId}`}
                   </h2>
+                  {resultChatId != null && (
+                    <p className="text-xs text-muted-foreground mb-3">
+                      {formatChatLabel(resultChatId, resultChatTitle)}
+                    </p>
+                  )}
                   <div className="grid grid-cols-3 gap-3">
                     <div className="rounded-xl bg-muted/40 p-3 text-center">
                       <p className="text-2xl font-bold tabular-nums text-foreground">
@@ -483,7 +497,12 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                             Negativ xabarlar ro&apos;yxati ({filteredNegative.length})
                           </p>
                           <div className="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
-                            {filteredNegative.map(msg => (
+                            {filteredNegative.map(msg => {
+                              const userLabel = formatUserLabel(
+                                msg.sender_id,
+                                msg.sender_username,
+                              )
+                              return (
                               <div
                                 key={msg.id}
                                 className="rounded-lg border border-red-500/20 bg-red-500/5 p-3"
@@ -493,9 +512,9 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
                                       <ReasonBadge reason={msg.reason} variant="short" />
-                                      {formatUserLabel(msg.sender_id, msg.sender_username) && (
+                                      {userLabel && (
                                         <span className="text-[10px] text-muted-foreground font-mono">
-                                          {formatUserLabel(msg.sender_id, msg.sender_username)}
+                                          {userLabel}
                                         </span>
                                       )}
                                     </div>
@@ -510,7 +529,8 @@ export function AnalyzeContent({ initialChats, initialPhone }: AnalyzeContentPro
                                   </div>
                                 </div>
                               </div>
-                            ))}
+                              )
+                            })}
                           </div>
                         </>
                       ) : (

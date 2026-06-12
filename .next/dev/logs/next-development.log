@@ -1,5 +1,222 @@
-[00:00:04.716] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-[00:00:05.643] Server  LOG      ✓ Ready in 4.6s
-[00:00:11.028] Server  LOG      ○ Compiling /chats ...
-[00:00:18.931] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:19.057] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:00:04.421] Server  WARN     ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:04.944] Server  LOG      ✓ Ready in 3.5s
+[00:03:18.951] Server  LOG      ○ Compiling /login ...
+[00:03:26.187] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:03:26.532] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:04:22.791] Server  ERROR   FATAL: JWT_SECRET_KEY is not set — blocking all protected routes
+[00:04:23.463] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:04:23.670] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:11:47.828] Server  LOG      ✓ Compiled in 1208ms
+[00:13:17.721] Server  LOG        Reload env: .env.local
+[00:13:21.881] Server  LOG      ○ Compiling /dashboard ...
+[00:15:06.991] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:15:07.553] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+      <RedirectBoundary>
+        <RedirectErrorBoundary router={{...}}>
+          <InnerLayoutRouter url="/dashboard" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+            <SegmentViewNode type="page" pagePath="dashboard/...">
+              <SegmentTrieNode>
+              <DashboardPage>
+                <Navbar>
+                <DashboardPage>
+                  <DashboardContent phone="+99•••••••682" stats={{...}}>
+                    <div className="min-h-scre...">
+                      <div className="mx-auto ma...">
+                        <div>
+                        <div className="grid gap-4...">
+                          <StatCard label="Jami tahlil" value={1267} sub="xabar" accentClass="border-l-s...">
+                            <div className="rounded-2x...">
+                              <p>
+                              <p className="text-3xl font-bold text-foreground tabular-nums">
++                               1,267
+-                               1 267
+                              ...
+                          ...
+                        ...
+            ...
+          ...
+
+[00:15:07.658] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:16:20.307] Server  LOG      ○ Compiling /analyze ...
+[00:22:37.156] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:37.380] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[00:23:16.764] Server  LOG      ○ Compiling /api/analyze ...
+[01:04:31.988] Server  LOG      ○ Compiling /chats ...
+[01:13:02.868] Server  LOG      ○ Compiling /api/chats/[chatId]/unmute/[userId] ...
+[01:55:03.760] Server  LOG      ✓ Compiled in 9.6s
+[01:55:07.517] Server  LOG      ✓ Compiled in 458ms
+[01:55:10.924] Server  LOG      ✓ Compiled in 1758ms
+[02:22:13.948] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:22:14.186] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:23:36.399] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:23:36.847] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+      <RedirectBoundary>
+        <RedirectErrorBoundary router={{...}}>
+          <InnerLayoutRouter url="/dashboard" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+            <SegmentViewNode type="page" pagePath="dashboard/...">
+              <SegmentTrieNode>
+              <DashboardPage>
+                <Navbar>
+                <DashboardPage>
+                  <DashboardContent phone="+99•••••••682" stats={{...}}>
+                    <div className="min-h-scre...">
+                      <div className="mx-auto ma...">
+                        <div>
+                        <div className="grid gap-4...">
+                          <StatCard label="Jami tahlil" value={1856} sub="xabar" accentClass="border-l-s...">
+                            <div className="rounded-2x...">
+                              <p>
+                              <p className="text-3xl font-bold text-foreground tabular-nums">
++                               1,856
+-                               1 856
+                              ...
+                          ...
+                        ...
+            ...
+          ...
+
+[02:23:36.847] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:24:40.066] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:24:40.385] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:24:40.385] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+      <RedirectBoundary>
+        <RedirectErrorBoundary router={{...}}>
+          <InnerLayoutRouter url="/dashboard" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+            <SegmentViewNode type="page" pagePath="dashboard/...">
+              <SegmentTrieNode>
+              <DashboardPage>
+                <Navbar>
+                <DashboardPage>
+                  <DashboardContent phone="+99•••••••682" stats={{...}}>
+                    <div className="min-h-scre...">
+                      <div className="mx-auto ma...">
+                        <div>
+                        <div className="grid gap-4...">
+                          <StatCard label="Jami tahlil" value={1856} sub="xabar" accentClass="border-l-s...">
+                            <div className="rounded-2x...">
+                              <p>
+                              <p className="text-3xl font-bold text-foreground tabular-nums">
++                               1,856
+-                               1 856
+                              ...
+                          ...
+                        ...
+            ...
+          ...
+
+[02:29:19.021] Server  LOG      ✓ Compiled in 8.3s
+[02:31:02.153] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:31:02.645] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.
+[02:31:03.591] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+      <RedirectBoundary>
+        <RedirectErrorBoundary router={{...}}>
+          <InnerLayoutRouter url="/dashboard" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+            <SegmentViewNode type="page" pagePath="dashboard/...">
+              <SegmentTrieNode>
+              <DashboardPage>
+                <Navbar>
+                <DashboardPage>
+                  <DashboardContent phone="+99•••••••682" stats={{...}}>
+                    <div className="min-h-scre...">
+                      <div className="mx-auto ma...">
+                        <div>
+                        <div className="grid gap-4...">
+                          <StatCard label="Jami tahlil" value={1856} sub="xabar" accentClass="border-l-s...">
+                            <div className="rounded-2x...">
+                              <p>
+                              <p className="text-3xl font-bold text-foreground tabular-nums">
++                               1,856
+-                               1 856
+                              ...
+                          ...
+                        ...
+            ...
+          ...
+
+[02:36:03.358] Browser ERROR   ./components/features/analyze/analyze-content.tsx:530:30
+Parsing ecmascript source code failed
+  528 |                                 </div>
+  529 |                               </div>
+> 530 |                             ))}
+      |                              ^
+  531 |                           </div>
+  532 |                         </>
+  533 |                       ) : (
+
+Expected '</', got ')'
+
+Import trace:
+  Server Component:
+    ./components/features/analyze/analyze-content.tsx
+    ./app/analyze/page.tsx
+[02:36:03.359] Browser ERROR   ./components/features/analyze/analyze-content.tsx:530:30
+Parsing ecmascript source code failed
+  528 |                                 </div>
+  529 |                               </div>
+> 530 |                             ))}
+      |                              ^
+  531 |                           </div>
+  532 |                         </>
+  533 |                       ) : (
+
+Expected '</', got ')'
+
+Import trace:
+  Server Component:
+    ./components/features/analyze/analyze-content.tsx
+    ./app/analyze/page.tsx
+[02:36:05.609] Server  LOG      ✓ Compiled in 3ms
+[02:37:29.654] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:37:29.918] Browser LOG     [Vercel Web Analytics] Failed to load script from https://va.vercel-scripts.com/v1/script.debug.js. Please check if any ad blockers are enabled and try again.

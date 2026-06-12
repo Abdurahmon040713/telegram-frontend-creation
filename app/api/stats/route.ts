@@ -15,6 +15,7 @@ export interface StatsData {
   chats_analyzed: number
   recent_analyses: {
     chat_id: number
+    chat_title?: string | null
     analyzed_count: number
     negative_count: number
     fetch_limit: number

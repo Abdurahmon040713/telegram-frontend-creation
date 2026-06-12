@@ -23,6 +23,7 @@ import {
   CommandInput, CommandItem, CommandList,
 } from "@/components/ui/command"
 import { AlertMessage } from "@/components/alert-message"
+import { formatChatLabel } from "@/lib/format-chat-label"
 import { formatUserLabel } from "@/lib/format-user-label"
 import { cn }           from "@/lib/utils"
 import { ApiError, type Chat } from "@/lib/api"
@@ -38,6 +39,7 @@ type DatePreset  = 'today' | 'yesterday' | 'last3days' | 'custom'
 interface SearchResult {
   id:              number
   chat_id:         number
+  chat_title?:     string | null
   text:            string
   is_negative:     boolean
   reason:          DetectReason
@@ -265,7 +267,9 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
                   'Aniqlash usuli', 'Ishonch (%)', 'Xabar matni']
 
     const rows = results.results.map(item => {
-      const chat   = chats.find(c => c.id === item.chat_id)?.title ?? `Chat ${item.chat_id}`
+      const chatTitle =
+        item.chat_title ?? chats.find(c => c.id === item.chat_id)?.title
+      const chat = formatChatLabel(item.chat_id, chatTitle)
       const date   = item.analyzed_at ? new Date(item.analyzed_at).toLocaleString('uz-UZ') : '—'
       const status = item.user_status === 'banned'  ? 'Bloklangan' :
                      item.user_status === 'muted'   ? 'Cheklangan (Mute)' :
@@ -600,7 +604,10 @@ export function SearchContent({ initialPhone }: SearchContentProps) {
                         </span>
                         <span className="opacity-40">·</span>
                         <span className="font-medium text-foreground">
-                          {chats.find(c => c.id === item.chat_id)?.title ?? `Chat ${item.chat_id}`}
+                          {formatChatLabel(
+                            item.chat_id,
+                            item.chat_title ?? chats.find(c => c.id === item.chat_id)?.title,
+                          )}
                         </span>
                         {formatUserLabel(item.sender_id, item.sender_username) && (
                           <>

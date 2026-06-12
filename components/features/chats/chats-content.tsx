@@ -20,6 +20,7 @@ import {
   chatsApi, ApiError, moderationApi,
   type Chat, type AnalyzeResponse, type ViolationRecord, type MutePreset,
 } from "@/lib/api"
+import { formatChatLabel } from "@/lib/format-chat-label"
 import { formatUserLabel } from "@/lib/format-user-label"
 import { cn }            from "@/lib/utils"
 import { useApiError }   from "@/lib/hooks/useApiError"
@@ -551,8 +552,8 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                 <h2 className="text-lg font-semibold text-foreground truncate">
                   {selectedChat.title}
                 </h2>
-                <p className="text-xs text-muted-foreground font-mono mt-0.5">
-                  chat_id: {selectedChat.id} · {selectedChat.type}
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {formatChatLabel(selectedChat.id, selectedChat.title)} · {selectedChat.type}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2 shrink-0">
@@ -882,7 +883,7 @@ export function ChatsContent({ initialChats, initialPhone }: ChatsContentProps) 
                                   )}
                                 </div>
                                 <p className="text-xs text-muted-foreground font-mono mb-1">
-                                  ID: {v.user_id}
+                                  {formatUserLabel(v.user_id, v.username) ?? `User #${v.user_id}`}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                   Ogohlantirish:{" "}

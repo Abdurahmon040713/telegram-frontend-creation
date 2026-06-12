@@ -11,6 +11,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer,
 } from "recharts"
+import { formatChatLabel } from "@/lib/format-chat-label"
 import { cn } from "@/lib/utils"
 import type { StatsData } from "@/app/api/stats/route"
 
@@ -231,7 +232,9 @@ export function DashboardContent({ phone, stats }: DashboardContentProps) {
                       <BarChart3 className="h-4 w-4 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">Chat #{item.chat_id}</p>
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {formatChatLabel(item.chat_id, item.chat_title)}
+                      </p>
                       <div className="flex items-center gap-2 mt-0.5">
                         <span className="text-xs text-muted-foreground">{item.analyzed_count} xabar</span>
                         {item.negative_count > 0 && (
